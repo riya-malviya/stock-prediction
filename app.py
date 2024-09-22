@@ -176,13 +176,8 @@ with news:
   df_news = sn.read_rss()
   for i in range(10):
     st.subheader (f'News {i+1}')
-    #st.write(df_news['published'][i])
-    #st.write(df_news['title'][i])
-    #st.write(df_news['summary'][i])
     title_sentiment = df_news['sentiment_title'][i]
-    #st.write(f'Title Sentiment {title_sentiment}')
     news_sentiment = df_news['sentiment_summary'][i]
-    #st.write(f'News Sentiment {news_sentiment}')
 
 
     s = f"<p style='font-size:20px;'>{df_news['published'][i]}</p>"
