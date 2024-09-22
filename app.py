@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 
 
-from datetime import date
+from datetime import date, timedelta
 from prophet import Prophet
 from prophet.plot import plot_plotly
 from plotly import graph_objs as go
@@ -16,13 +16,36 @@ from plotly import graph_objs as go
 
 st.title('Stock Dashboard')
 
-ticker=st.sidebar.text_input('Ticker')
-start_date = st.sidebar.date_input('Start Date')
+ticker=st.sidebar.text_input('Ticker', 'F')
+today = date.today()
+default_date = today - timedelta(days=111)
+start_date = st.sidebar.date_input("Start Date", default_date)
 end_date = st.sidebar.date_input('End Date')
 
 
 data=yf.download(ticker, start=start_date, end=end_date)
 
+import requests
+
+def get_ticker (company_name):
+    url = "https://query2.finance.yahoo.com/v1/finance/search"
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    params = {"q": company_name, "quotes_count": 1, "country": "United States"}
+
+    res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
+    data = res.json()
+
+    company_code = data['quotes'][0]['symbol']
+    return company_code
+
+company_name = st.sidebar.text_input("Enter the company's name:")
+if company_name:
+    # Fetch and display the company ticker symbol
+    ticker_symbol = get_ticker(company_name)
+    if ticker_symbol:
+        st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
+    else:
+        st.sidebar.write('No ticker symbol found for the given company name.')
 
 fig=px.line(data, x=data.index, y=data['Adj Close'], title=ticker)
 st.plotly_chart(fig)
@@ -30,7 +53,7 @@ st.plotly_chart(fig)
 
 pricing_data, forecast_data, comparison, news = st.tabs(["**Pricing Data**", "**Forecast Data**", "**Comparison**", "**News**"])
 
-
+##### Pricing data page
 with pricing_data:
   st.header('Pricing Movements')
 
@@ -55,7 +78,7 @@ with pricing_data:
   st.write('**Risk Adj. Return is**', annual_return/(stdev*100))
 
 
-
+##### Forecast data page
 with forecast_data:
   START = "2015-01-01"
   TODAY = date.today().strftime("%Y-%m-%d")
@@ -82,7 +105,6 @@ with forecast_data:
 
 
   # Plot raw data
-
   def plot_raw_data():
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
@@ -118,7 +140,7 @@ with forecast_data:
   fig2 = m.plot_components(forecast)
   st.write(fig2)
 
-
+##### Comparison
 with comparison:
   st.header('Stock Market Comparison')
 
@@ -168,7 +190,7 @@ with comparison:
   plt.show()
   st.pyplot(fig3)
 
-
+##### Stock news page
 from stocknews import StockNews
 with news:
   st.header(f'News of {ticker}')
