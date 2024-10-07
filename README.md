@@ -1,35 +1,95 @@
-# stock-prediction
 
-In this project we build a stock prediction web app in Python using streamlit, yahoo finance, and Facebook Prophet.
-This stock prediction project uses streamlit to visualize the prediction of the stock market upto 4 years. It uses libraries like matplotlib, pandas, numpy, streamlit and stocknews to provide latest predictions and news.
+# Stock Vision
 
-**What services provided:** <br/>
--> **Stock Dashboard:** Main dashboard where all the information regarding the ticker, pricing movements and the prediction is shown.<br/><br/>
--> **Pricing Movements:** The pricing movements of ticker including parameters like Close, Open, High, Low, Adj Close, %Change etc. are shown. With annual return and deviations.<br/><br/>
--> **Forecast Data:** This tab shows user the raw data fetched from open source in the form of a time series dataframe which will be used to analyse and predict the future stock prices.<br/><br/>
--> **Forecast Plot:** Now the forecasted data is plotted for the chosen time frame along with the raw data of the particular ticker.<br/><br/>
--> **Forecast Components:** The forecasted data is plotted for daily, weekly and yearly format to give profound understanding to the user about future trends.<br/><br/>
--> **Comparison**: The third tab is the comparison tab where the price of the selected ticker is compared with MA50(Moving Average), MA100 and MA200.<br/><br/>
--> **News**: The fourth and last section is the news section where the Top 10 news at that time about the selected ticker are shown with the title and news sentiment.<br/><br/>
+## Overview
 
-**How to run project:** <br/>
--> Run the following commands:<br/>
-  ● pip install stocknews<br/>
-  ● pip install streamlit<br/>
-  ● %%writefile app.py<br/>
-  ● ! wget -q -O - ipv4.icanhazip.com<br/>
-  ● ! streamlit run app.py & npx localtunnel --port 8501<br/><br/>
+The Stock Dashboard is a web application built using Streamlit that allows users to visualize and analyze stock market data. It provides features such as historical pricing data, forecast predictions, stock comparisons, and the latest news related to the specified stock.
 
--> Now run app.py file<br/><br/>
+Deployed website: [Stock Vision](https://stock-prediction-5a77cx7hdaxzaywhkqgzbz.streamlit.app/) 
 
-**Images:** <br/><br/>
+## Features
 
-<img src="https://github.com/riya-malviya/stock-prediction/assets/171536835/30257bed-036a-4ace-ba13-49333180ee00" width="700" height="400"><br/><br/>
-<img src="https://github.com/riya-malviya/stock-prediction/assets/171536835/235d310e-4166-4c10-8ab2-077ec216a05d" width="700" height="400"><br/><br/>
-<img src="https://github.com/riya-malviya/stock-prediction/assets/171536835/09d107ea-30bc-47e1-96ae-d745a5602206" width="700" height="400"><br/><br/>
-<img src="https://github.com/riya-malviya/stock-prediction/assets/171536835/0696f996-b680-4b44-8b9b-a70a200ec43f" width="700" height="400"><br/><br/>
-<img src="https://github.com/riya-malviya/stock-prediction/assets/171536835/29c449bb-0851-4ef2-b9e2-c943c99a2194" width="700" height="400"><br/><br/>
-<img src="https://github.com/riya-malviya/stock-prediction/assets/171536835/336e496f-dfac-4f18-be38-7334d5042d3d" width="700" height="400"><br/><br/>
-<img src="https://github.com/riya-malviya/stock-prediction/assets/171536835/42a15c7e-46b0-47ed-a044-793598780c6c" width="700" height="400"><br/><br/>
-<img src="https://github.com/riya-malviya/stock-prediction/assets/171536835/43130cde-7b0d-44c6-b605-b09f87928892" width="700" height="400"><br/><br/>
+- **Historical Pricing Data**: Users can view the historical adjusted closing prices for a specified stock ticker.
+- **Forecasting**: Using the Prophet library, users can forecast future stock prices based on historical data.
+- **Moving Averages Comparison**: Users can compare stock prices against various moving averages (MA50, MA100, MA200).
+- **Latest News**: Users can access the latest news articles related to the specified stock ticker.
+- **User-Friendly Interface**: The dashboard is designed to be intuitive and easy to navigate.
+
+## Getting Started
+
+### Prerequisites
+
+To run this application, ensure you have the following installed:
+
+- Python 3.7 or higher
+- Streamlit
+- yfinance
+- pandas
+- numpy
+- matplotlib
+- plotly
+- Prophet
+- requests
+
+### Installation
+
+1. Clone the repository.
+
+2. Install the required packages:
+
+   ```bash
+   pip install streamlit yfinance pandas numpy matplotlib plotly prophet requests
+   ```
+
+### Running the Application
+
+To start the Stock Dashboard, run the following command in your terminal:
+
+```bash
+streamlit run app.py
+```
+
+Replace `app.py` with the name of your main application file if it differs.
+
+### Usage
+
+1. Enter a stock ticker symbol in the sidebar (e.g., `AAPL` for Apple Inc.).
+2. Specify the date range for historical data.
+3. Explore the different tabs: **Pricing Data**, **Forecast Data**, **Comparison**, and **News**.
+
+### Example Screenshots
+
+#### Main Dashboard
+
+![Screenshot (124)](https://github.com/user-attachments/assets/6bf727c2-a063-45d6-b0c6-38a080d75a44)
+  <!-- Add a screenshot of the main dashboard here -->
+
+#### Pricing Data Tab
+
+![Screenshot (125)](https://github.com/user-attachments/assets/3ee83d6d-7c03-4b33-89d1-3307956fa3f8)
+  <!-- Add a screenshot of the pricing data tab here -->
+
+#### Forecast Data Tab
+
+![Screenshot (127)](https://github.com/user-attachments/assets/bfab9948-3c0b-4e74-96c4-100fa2aa66ff)
+  <!-- Add a screenshot of the forecast data tab here -->
+
+#### Comparison Tab
+
+![Screenshot (128)](https://github.com/user-attachments/assets/9985487b-6bf8-4dbb-8762-dccb585ce99f)
+  <!-- Add a screenshot of the comparison tab here -->
+
+#### News Tab
+
+![Screenshot (129)](https://github.com/user-attachments/assets/1d735b07-86e2-4270-9968-e2d6e5ef94f3)
+  <!-- Add a screenshot of the news tab here -->
+
+## Acknowledgements
+
+- [Streamlit](https://streamlit.io/)
+- [Yahoo Finance API](https://www.yahoofinanceapi.com/)
+- [Prophet](https://facebook.github.io/prophet/)
+- [Plotly](https://plotly.com/python/)
+
+
 
