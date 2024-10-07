@@ -51,6 +51,7 @@ def get_ticker (company_name):
     company_code = data['quotes'][0]['symbol']
     return company_code
 
+st.sidebar.write("To get ticker symbol-")
 company_name = st.sidebar.text_input("Enter the company's name:")
 if company_name:
     # Fetch and display the company ticker symbol
