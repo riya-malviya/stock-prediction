@@ -192,24 +192,35 @@ with comparison:
   st.pyplot(fig3)
 
 ##### Stock news page
-from stocknews import StockNews
+def get_stock_news(ticker):
+    url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    response = requests.get(url, headers={'User-Agent': user_agent})
+
+    if response.status_code == 200:
+        data = response.json()
+        news = data.get('news', [])
+        return news
+    else:
+        return []
+
+def convert_timestamp(unix_timestamp):
+    return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
+
+
 with news:
-  st.header(f'News of {ticker}')
-  sn = StockNews(ticker, save_news=False)
-  df_news = sn.read_rss()
-  for i in range(10):
-    st.subheader (f'News {i+1}')
-    title_sentiment = df_news['sentiment_title'][i]
-    news_sentiment = df_news['sentiment_summary'][i]
+    st.header(f'Latest News for {ticker}')
+    
+    news_articles = get_stock_news(ticker)
 
-
-    s = f"<p style='font-size:20px;'>{df_news['published'][i]}</p>"
-    st.markdown(s, unsafe_allow_html=True)
-    s2 = f"<p style='font-size:20px;'>{df_news['title'][i]}</p>"
-    st.markdown(s2, unsafe_allow_html=True)
-    s3 = f"<p style='font-size:20px;'>{df_news['summary'][i]}</p>"
-    st.markdown(s3, unsafe_allow_html=True)
-    s4 = f"<p style='font-size:20px;'>Title Sentiment {title_sentiment}</p>"
-    st.markdown(s4, unsafe_allow_html=True)
-    s5 = f"<p style='font-size:20px;'>News Sentiment {news_sentiment}</p>"
-    st.markdown(s5, unsafe_allow_html=True)
+    if news_articles:
+        # Loop through and display the news
+        for i, article in enumerate(news_articles[:10]):
+            st.subheader(f'News {i+1}')
+            st.write(f"**Title**: {article['title']}")
+            st.write(f"**Publisher**: {article['publisher']}")
+            st.write(f"**Published on**: {article['providerPublishTime']}")
+            st.write(f"**Link**: [Read more]({article['link']})")
+            st.write("---")  # Divider between articles
+    else:
+        st.write(f'No recent news found for {ticker}.')
