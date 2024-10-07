@@ -219,6 +219,7 @@ with news:
             st.subheader(f'News {i+1}')
             st.write(f"**Title**: {article['title']}")
             st.write(f"**Publisher**: {article['publisher']}")
+            published_time = convert_timestamp(article['providerPublishTime'])
             st.write(f"**Published on**: {article['providerPublishTime']}")
             st.write(f"**Link**: [Read more]({article['link']})")
             st.write("---")  # Divider between articles
