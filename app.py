@@ -64,11 +64,13 @@ if company_name:
 if data.empty:
   st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
 else:
+    fig=px.line(data, x=data.index, y=data['Adj Close'], title=ticker)
+    st.plotly_chart(fig)
     pricing_data, forecast_data, comparison, news = st.tabs(["**Pricing Data**", "**Forecast Data**", "**Comparison**", "**News**"])
     
     ##### Pricing data page
     with pricing_data:
-      st.header('Pricing Movements')
+      st.header(f'Pricing Movements of {ticker}')
     
     
       def color_df(val):
@@ -113,7 +115,7 @@ else:
       data_load_state.text('Loading data... done!')
     
     
-      st.subheader('Raw data')
+      st.subheader(f'Raw data of {ticker}')
       st.dataframe(data.tail(), width=900)
     
     
@@ -140,7 +142,7 @@ else:
     
     
       # Show and plot forecast
-      st.subheader('Forecast data')
+      st.subheader(f'Forecast data of {ticker}')
       st.write(forecast.tail())
        
       st.write(f'**Forecast plot for {n_years} year(s)**')
@@ -155,7 +157,7 @@ else:
     
     ##### Comparison
     with comparison:
-      st.header('Stock Market Comparison')
+      st.header(f'Stock Market Comparison for {ticker}')
     
       data=yf.download(ticker, start=start_date, end=end_date)
     
@@ -175,7 +177,7 @@ else:
       data_test_scale = scaler.fit_transform(data_test)
     
     
-      st.subheader('Price vs MA50')
+      st.subheader(f'Price of {ticker} vs MA50')
       ma_50_days = data.Close.rolling(50).mean()
       fig1 = plt.figure(figsize=(8,6))
       plt.plot(ma_50_days, 'r')
@@ -184,7 +186,7 @@ else:
       st.pyplot(fig1)
     
     
-      st.subheader('Price vs MA50 vs MA100')
+      st.subheader(f'Price of {ticker} vs MA50 vs MA100')
       ma_100_days = data.Close.rolling(100).mean()
       fig2 = plt.figure(figsize=(8,6))
       plt.plot(ma_50_days, 'r')
@@ -194,7 +196,7 @@ else:
       st.pyplot(fig2)
     
     
-      st.subheader('Price vs MA100 vs MA200')
+      st.subheader(f'Price of {ticker} vs MA100 vs MA200')
       ma_200_days = data.Close.rolling(200).mean()
       fig3 = plt.figure(figsize=(8,6))
       plt.plot(ma_100_days, 'r')
