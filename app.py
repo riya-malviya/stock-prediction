@@ -192,6 +192,10 @@ with comparison:
   st.pyplot(fig3)
 
 ##### Stock news page
+import requests
+import streamlit as st
+from datetime import datetime
+
 def get_stock_news(ticker):
     url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
@@ -207,7 +211,7 @@ def get_stock_news(ticker):
 def convert_timestamp(unix_timestamp):
     return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
 
-
+# Yahoo Finance News Tab
 with news:
     st.header(f'Latest News for {ticker}')
     
@@ -219,9 +223,13 @@ with news:
             st.subheader(f'News {i+1}')
             st.write(f"**Title**: {article['title']}")
             st.write(f"**Publisher**: {article['publisher']}")
+
+            # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
             published_time = convert_timestamp(article['providerPublishTime'])
-            st.write(f"**Published on**: {article['providerPublishTime']}")
+            st.write(f"**Published on**: {published_time}")
+            
             st.write(f"**Link**: [Read more]({article['link']})")
             st.write("---")  # Divider between articles
     else:
         st.write(f'No recent news found for {ticker}.')
+
