@@ -21,7 +21,7 @@ ticker=st.sidebar.text_input('Ticker', 'F')
 today = date.today()
 default_date = today - timedelta(days=111)
 start_date = st.sidebar.date_input("Start Date", default_date)
-end_date = st.sidebar.date_input('End Date', today)
+end_date = st.sidebar.date_input('End Date', '2024-10-21')
 
 
 data=yf.download(ticker, start=start_date, end=end_date)
