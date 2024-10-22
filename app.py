@@ -263,28 +263,224 @@
 #             st.write(f'No recent news found for {ticker}.')
 
 
+# import streamlit as st
+# import yfinance as yf
+# import pandas as pd
+# import numpy as np
+# import matplotlib.pyplot as plt
+# import plotly.express as px
+# from datetime import date, timedelta
+# from prophet import Prophet
+# from prophet.plot import plot_plotly
+# from plotly import graph_objs as go
+
+# # Streamlit app title
+# st.title('Stock Dashboard')
+
+# # Sidebar inputs for ticker, start date, and end date
+# ticker = st.sidebar.text_input('Ticker', 'F')
+# today = date.today()
+# default_date = today - timedelta(days=111)
+# start_date = st.sidebar.date_input("Start Date", default_date)
+# end_date = st.sidebar.date_input('End Date')
+
+# # Function to fetch stock data from Yahoo Finance
+# def fetch_data(ticker, start, end):
+#     try:
+#         data = yf.download(ticker, start=start, end=end)
+#         return data
+#     except Exception as e:
+#         st.write(f"Error fetching data: {e}")
+#         return pd.DataFrame()
+
+# # Fetch data for entered ticker
+# data = fetch_data(ticker, start_date, end_date)
+
+# if data.empty:
+#     st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
+# else:
+#     # Plot adjusted closing prices
+#     fig = px.line(data, x=data.index, y=data['Adj Close'], title=f'{ticker} Stock Prices')
+#     st.plotly_chart(fig)
+
+#     # Tabs for pricing data, forecast, comparison, and news
+#     pricing_data, forecast_data, comparison, news = st.tabs(
+#         ["**Pricing Data**", "**Forecast Data**", "**Comparison**", "**News**"]
+#     )
+
+#     ##### Pricing data tab #####
+#     with pricing_data:
+#         st.header(f'Pricing Movements of {ticker}')
+        
+#         # Calculate percentage change and display data with color formatting
+#         def color_df(val):
+#             color = '#72f292' if val > 0 else '#eb4034'
+#             return f'color:{color}'
+
+#         data2 = data.copy()
+#         data2['% Change'] = data['Adj Close'] / data['Adj Close'].shift(1) - 1
+#         st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400)
+        
+#         # Calculate and display annual return and standard deviation
+#         annual_return = data2['% Change'].mean() * 252 * 100
+#         stdev = np.std(data2['% Change']) * np.sqrt(252)
+#         st.write('**Annual Return is**', annual_return, '**%**')
+#         st.write('**Standard Deviation is**', stdev * 100, '**%**')
+#         st.write('**Risk Adj. Return is**', annual_return / (stdev * 100))
+
+#     ##### Forecast data tab #####
+#     with forecast_data:
+#         st.header(f'Forecast Data for {ticker}')
+
+#         # Load data for forecasting
+#         @st.cache_data
+#         def load_data(ticker):
+#             data = yf.download(ticker, start="2015-01-01", end=today.strftime("%Y-%m-%d"))
+#             data.reset_index(inplace=True)
+#             return data
+
+#         data = load_data(ticker)
+#         st.dataframe(data.tail(), width=900)
+
+#         # Plot raw data
+#         def plot_raw_data():
+#             fig = go.Figure()
+#             fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="Stock Open"))
+#             fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+#             fig.layout.update(title_text='Time Series Data with Rangeslider', xaxis_rangeslider_visible=True)
+#             st.plotly_chart(fig)
+
+#         plot_raw_data()
+
+#         # Define function to fit Prophet model
+#         def fit_prophet_model(df_train):
+#             m = Prophet()
+#             m.fit(df_train)
+#             return m
+
+#         # Prepare training data
+#         df_train = data[['Date', 'Close']].rename(columns={"Date": "ds", "Close": "y"})
+#         df_train['ds'] = pd.to_datetime(df_train['ds'], errors='coerce')
+#         df_train = df_train.dropna()
+
+#         if df_train.empty:
+#             st.error("The training data is empty after processing. Please check the data.")
+#         else:
+#             # Fit the Prophet model and predict future data
+#             n_years = st.slider('**Years of prediction:**', 1, 4)
+#             period = n_years * 365
+#             model = fit_prophet_model(df_train)
+#             future = model.make_future_dataframe(periods=period)
+#             forecast = model.predict(future)
+
+#             # Display forecast data
+#             st.write(forecast.tail())
+#             st.write(f'**Forecast plot for {n_years} year(s)**')
+#             fig1 = plot_plotly(model, forecast)
+#             st.plotly_chart(fig1)
+#             st.write("**In the above plot, ds = Date and y = Closing Price**")
+
+#             # Display forecast components
+#             st.write("**Forecast components**")
+#             fig2 = model.plot_components(forecast)
+#             st.write(fig2)
+
+#     ##### Comparison tab #####
+#     with comparison:
+#         st.header(f'Stock Market Comparison for {ticker}')
+#         # Show stock data and compare with moving averages (MA50, MA100, MA200)
+#         st.subheader('Stock Data')
+#         st.dataframe(data, width=900)
+        
+#         ma_50_days = data.Close.rolling(50).mean()
+#         ma_100_days = data.Close.rolling(100).mean()
+#         ma_200_days = data.Close.rolling(200).mean()
+        
+#         st.subheader(f'Price of {ticker} vs MA50')
+#         fig1 = plt.figure(figsize=(8, 6))
+#         plt.plot(ma_50_days, 'r', label='MA50')
+#         plt.plot(data.Close, 'g', label='Close Price')
+#         plt.legend()
+#         plt.show()
+#         st.pyplot(fig1)
+
+#         st.subheader(f'Price of {ticker} vs MA50 vs MA100')
+#         fig2 = plt.figure(figsize=(8, 6))
+#         plt.plot(ma_50_days, 'r', label='MA50')
+#         plt.plot(ma_100_days, 'b', label='MA100')
+#         plt.plot(data.Close, 'g', label='Close Price')
+#         plt.legend()
+#         plt.show()
+#         st.pyplot(fig2)
+
+#         st.subheader(f'Price of {ticker} vs MA100 vs MA200')
+#         fig3 = plt.figure(figsize=(8, 6))
+#         plt.plot(ma_100_days, 'r', label='MA100')
+#         plt.plot(ma_200_days, 'b', label='MA200')
+#         plt.plot(data.Close, 'g', label='Close Price')
+#         plt.legend()
+#         plt.show()
+#         st.pyplot(fig3)
+
+#     ##### News tab #####
+#     with news:
+#         st.header(f'Latest News for {ticker}')
+        
+#         def get_stock_news(ticker):
+#             url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+#             user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+#             response = requests.get(url, headers={'User-Agent': user_agent})
+
+#             if response.status_code == 200:
+#                 data = response.json()
+#                 news = data.get('news', [])
+#                 return news
+#             else:
+#                 return []
+
+#         def convert_timestamp(unix_timestamp):
+#             return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
+
+#         news_articles = get_stock_news(ticker)
+
+#         if news_articles:
+#             for i, article in enumerate(news_articles[:10]):
+#                 st.subheader(f'News {i + 1}')
+#                 st.write(f"**Title**: {article['title']}")
+#                 st.write(f"**Publisher**: {article['publisher']}")
+#                 published_time = convert_timestamp(article['providerPublishTime'])
+#                 st.write(f"**Published on**: {published_time}")
+#                 st.write(f"**Link**: [Read more]({article['link']})")
+#                 st.write("---")
+#         else:
+#             st.write(f'No recent news found for {ticker}.')
+
+
+
 import streamlit as st
 import yfinance as yf
 import pandas as pd
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 import plotly.express as px
+import requests
 from datetime import date, timedelta
 from prophet import Prophet
 from prophet.plot import plot_plotly
 from plotly import graph_objs as go
+from sklearn.preprocessing import MinMaxScaler
 
-# Streamlit app title
 st.title('Stock Dashboard')
 
-# Sidebar inputs for ticker, start date, and end date
-ticker = st.sidebar.text_input('Ticker', 'F')
+# Sidebar input for ticker and date range
+ticker = st.sidebar.text_input('Ticker', 'AAPL')
 today = date.today()
 default_date = today - timedelta(days=111)
 start_date = st.sidebar.date_input("Start Date", default_date)
 end_date = st.sidebar.date_input('End Date')
 
-# Function to fetch stock data from Yahoo Finance
+# Fetch stock data from Yahoo Finance
 def fetch_data(ticker, start, end):
     try:
         data = yf.download(ticker, start=start, end=end)
@@ -296,136 +492,148 @@ def fetch_data(ticker, start, end):
 # Fetch data for entered ticker
 data = fetch_data(ticker, start_date, end_date)
 
+# Check if data is empty
 if data.empty:
     st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
 else:
-    # Plot adjusted closing prices
-    fig = px.line(data, x=data.index, y=data['Adj Close'], title=f'{ticker} Stock Prices')
+    fig = px.line(data, x=data.index, y=data['Adj Close'], title=ticker)
     st.plotly_chart(fig)
+    
+    pricing_data, forecast_data, comparison, news = st.tabs(["**Pricing Data**", "**Forecast Data**", "**Comparison**", "**News**"])
 
-    # Tabs for pricing data, forecast, comparison, and news
-    pricing_data, forecast_data, comparison, news = st.tabs(
-        ["**Pricing Data**", "**Forecast Data**", "**Comparison**", "**News**"]
-    )
-
-    ##### Pricing data tab #####
+    ##### Pricing data page
     with pricing_data:
         st.header(f'Pricing Movements of {ticker}')
-        
-        # Calculate percentage change and display data with color formatting
+
         def color_df(val):
-            color = '#72f292' if val > 0 else '#eb4034'
+            if val > 0:
+                color = '#72f292'
+            else:
+                color = '#eb4034'
             return f'color:{color}'
 
         data2 = data.copy()
         data2['% Change'] = data['Adj Close'] / data['Adj Close'].shift(1) - 1
         st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400)
-        
-        # Calculate and display annual return and standard deviation
+
         annual_return = data2['% Change'].mean() * 252 * 100
-        stdev = np.std(data2['% Change']) * np.sqrt(252)
         st.write('**Annual Return is**', annual_return, '**%**')
+        stdev = np.std(data2['% Change']) * np.sqrt(252)
         st.write('**Standard Deviation is**', stdev * 100, '**%**')
         st.write('**Risk Adj. Return is**', annual_return / (stdev * 100))
 
-    ##### Forecast data tab #####
+    ##### Forecast data page
     with forecast_data:
-        st.header(f'Forecast Data for {ticker}')
+        START = "2015-01-01"
+        TODAY = date.today().strftime("%Y-%m-%d")
+        n_years = st.slider('**Years of prediction:**', 1, 4)
+        period = n_years * 365
 
-        # Load data for forecasting
+        # Prepare training data with proper date handling
+        def prepare_data_for_prophet(data):
+            # Ensure 'Date' is properly parsed as datetime
+            data['Date'] = pd.to_datetime(data['Date'], errors='coerce')
+
+            # Drop rows with invalid dates
+            if data['Date'].isna().sum() > 0:
+                st.write(f"Found {data['Date'].isna().sum()} invalid dates, removing them.")
+                data = data.dropna(subset=['Date'])
+
+            df_train = data[['Date', 'Close']].rename(columns={"Date": "ds", "Close": "y"})
+            return df_train.dropna()
+
+        # Load the data
         @st.cache_data
         def load_data(ticker):
-            data = yf.download(ticker, start="2015-01-01", end=today.strftime("%Y-%m-%d"))
+            data = yf.download(ticker, START, TODAY)
             data.reset_index(inplace=True)
             return data
 
+        data_load_state = st.text('Loading data...')
         data = load_data(ticker)
+        data_load_state.text('Loading data... done!')
+
+        st.subheader(f'Raw data of {ticker}')
         st.dataframe(data.tail(), width=900)
 
         # Plot raw data
         def plot_raw_data():
             fig = go.Figure()
-            fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="Stock Open"))
-            fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
-            fig.layout.update(title_text='Time Series Data with Rangeslider', xaxis_rangeslider_visible=True)
+            fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
+            fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
+            fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
             st.plotly_chart(fig)
 
         plot_raw_data()
 
-        # Define function to fit Prophet model
-        def fit_prophet_model(df_train):
-            m = Prophet()
-            m.fit(df_train)
-            return m
-
-        # Prepare training data
-        df_train = data[['Date', 'Close']].rename(columns={"Date": "ds", "Close": "y"})
-        df_train['ds'] = pd.to_datetime(df_train['ds'], errors='coerce')
-        df_train = df_train.dropna()
+        # Prepare the data and fit the Prophet model
+        df_train = prepare_data_for_prophet(data)
 
         if df_train.empty:
-            st.error("The training data is empty after processing. Please check the data.")
+            st.error("Training data is empty after processing.")
         else:
-            # Fit the Prophet model and predict future data
-            n_years = st.slider('**Years of prediction:**', 1, 4)
-            period = n_years * 365
+            # Function to fit the Prophet model
+            def fit_prophet_model(df_train):
+                m = Prophet()
+                m.fit(df_train)
+                return m
+
+            # Fit the model and make predictions
             model = fit_prophet_model(df_train)
             future = model.make_future_dataframe(periods=period)
             forecast = model.predict(future)
 
-            # Display forecast data
+            # Show and plot forecast
+            st.subheader(f'Forecast data of {ticker}')
             st.write(forecast.tail())
+
             st.write(f'**Forecast plot for {n_years} year(s)**')
             fig1 = plot_plotly(model, forecast)
             st.plotly_chart(fig1)
-            st.write("**In the above plot, ds = Date and y = Closing Price**")
+            st.write("**In the above plot, ds = datastamp or Date and y = Closing Price**")
 
-            # Display forecast components
             st.write("**Forecast components**")
             fig2 = model.plot_components(forecast)
             st.write(fig2)
 
-    ##### Comparison tab #####
+    ##### Comparison page
     with comparison:
         st.header(f'Stock Market Comparison for {ticker}')
-        # Show stock data and compare with moving averages (MA50, MA100, MA200)
-        st.subheader('Stock Data')
-        st.dataframe(data, width=900)
-        
-        ma_50_days = data.Close.rolling(50).mean()
-        ma_100_days = data.Close.rolling(100).mean()
-        ma_200_days = data.Close.rolling(200).mean()
-        
+
+        data_train = pd.DataFrame(data.Close[0:int(len(data) * 0.80)])
+        data_test = pd.DataFrame(data.Close[int(len(data) * 0.80):])
+
+        # Price comparison with moving averages (MA50, MA100, MA200)
         st.subheader(f'Price of {ticker} vs MA50')
+        ma_50_days = data.Close.rolling(50).mean()
         fig1 = plt.figure(figsize=(8, 6))
-        plt.plot(ma_50_days, 'r', label='MA50')
-        plt.plot(data.Close, 'g', label='Close Price')
-        plt.legend()
+        plt.plot(ma_50_days, 'r')
+        plt.plot(data.Close, 'g')
         plt.show()
         st.pyplot(fig1)
 
         st.subheader(f'Price of {ticker} vs MA50 vs MA100')
+        ma_100_days = data.Close.rolling(100).mean()
         fig2 = plt.figure(figsize=(8, 6))
-        plt.plot(ma_50_days, 'r', label='MA50')
-        plt.plot(ma_100_days, 'b', label='MA100')
-        plt.plot(data.Close, 'g', label='Close Price')
-        plt.legend()
+        plt.plot(ma_50_days, 'r')
+        plt.plot(ma_100_days, 'b')
+        plt.plot(data.Close, 'g')
         plt.show()
         st.pyplot(fig2)
 
         st.subheader(f'Price of {ticker} vs MA100 vs MA200')
+        ma_200_days = data.Close.rolling(200).mean()
         fig3 = plt.figure(figsize=(8, 6))
-        plt.plot(ma_100_days, 'r', label='MA100')
-        plt.plot(ma_200_days, 'b', label='MA200')
-        plt.plot(data.Close, 'g', label='Close Price')
-        plt.legend()
+        plt.plot(ma_100_days, 'r')
+        plt.plot(ma_200_days, 'b')
+        plt.plot(data.Close, 'g')
         plt.show()
         st.pyplot(fig3)
 
-    ##### News tab #####
+    ##### Stock news page
     with news:
         st.header(f'Latest News for {ticker}')
-        
+
         def get_stock_news(ticker):
             url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
             user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
@@ -433,8 +641,7 @@ else:
 
             if response.status_code == 200:
                 data = response.json()
-                news = data.get('news', [])
-                return news
+                return data.get('news', [])
             else:
                 return []
 
@@ -448,11 +655,16 @@ else:
                 st.subheader(f'News {i + 1}')
                 st.write(f"**Title**: {article['title']}")
                 st.write(f"**Publisher**: {article['publisher']}")
+
                 published_time = convert_timestamp(article['providerPublishTime'])
                 st.write(f"**Published on**: {published_time}")
+
                 st.write(f"**Link**: [Read more]({article['link']})")
                 st.write("---")
         else:
             st.write(f'No recent news found for {ticker}.')
+
+
+
 
 
