@@ -95,116 +95,70 @@ else:
       st.write('**Standard Deviation is**',stdev*100, '**%**')
       st.write('**Risk Adj. Return is**', annual_return/(stdev*100))
 
+ 
+    
     ##### Forecast data page
-with forecast_data:
-    START = "2015-01-01"
-    TODAY = date.today().strftime("%Y-%m-%d")
-
-    n_years = st.slider('**Years of prediction:**', 1, 4)
-    period = n_years * 365
-
-    @st.cache_data
-    def load_data(ticker):
-        data = yf.download(ticker, START, TODAY)
-        data.reset_index(inplace=True)  # Reset index to ensure dates are in a column
-        return data
-
-    data_load_state = st.text('Loading data...')
-    data = load_data(ticker)
-    data_load_state.text('Loading data... done!')
-
-    st.subheader(f'Raw data of {ticker}')
-    st.dataframe(data.tail(), width=900)
-
-    # Prepare the training data for Prophet
-    df_train = data[['Close']].reset_index()  # Reset index to get the dates as a column
-    df_train.columns = ['ds', 'y']  # Rename columns to match Prophet's requirements
-
-    # Ensure 'y' is in 1D format
-    df_train['y'] = df_train['y'].values.flatten()  # Ensure it's 1D
-
-    # Initialize and fit the Prophet model
-    m = Prophet()
-    m.fit(df_train)
-    future = m.make_future_dataframe(periods=period)
-    forecast = m.predict(future)
-
-    # Show and plot forecast
-    st.subheader(f'Forecast data of {ticker}')
-    st.write(forecast.tail())
+    with forecast_data:
+      START = "2015-01-01"
+      TODAY = date.today().strftime("%Y-%m-%d")
     
-    st.write(f'**Forecast plot for {n_years} year(s)**')
-    fig1 = plot_plotly(m, forecast)
-    st.plotly_chart(fig1)
-    st.write("**In the above plot, ds = datastamp or Date and y = Closing Price**")
-
-    st.write("**Forecast components**")
-    fig2 = m.plot_components(forecast)
-    st.write(fig2)
-
+      n_years = st.slider('**Years of prediction:**', 1, 4)
+      period = n_years * 365
     
     
-    # ##### Forecast data page
-    # with forecast_data:
-    #   START = "2015-01-01"
-    #   TODAY = date.today().strftime("%Y-%m-%d")
-    
-    #   n_years = st.slider('**Years of prediction:**', 1, 4)
-    #   period = n_years * 365
-    
-    
-    #   @st.cache_data
-    #   def load_data(ticker):
-    #       data = yf.download(ticker, START, TODAY)
-    #       data.reset_index(inplace=True)
-    #       return data
+      @st.cache_data
+      def load_data(ticker):
+          data = yf.download(ticker, START, TODAY)
+          data.reset_index(inplace=True)
+          return data
     
     
     
-    #   data_load_state = st.text('Loading data...')
-    #   data = load_data(ticker)
-    #   data_load_state.text('Loading data... done!')
+      data_load_state = st.text('Loading data...')
+      data = load_data(ticker)
+      data_load_state.text('Loading data... done!')
     
     
-    #   st.subheader(f'Raw data of {ticker}')
-    #   st.dataframe(data.tail(), width=900)
+      st.subheader(f'Raw data of {ticker}')
+      st.dataframe(data.tail(), width=900)
     
     
-    #   # Plot raw data
-    #   def plot_raw_data():
-    #     fig = go.Figure()
-    #     fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
-    #     fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
-    #     fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
-    #     st.plotly_chart(fig)
+      # Plot raw data
+      def plot_raw_data():
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
+        fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
+        st.plotly_chart(fig)
      
-    #   plot_raw_data()
+      plot_raw_data()
     
     
-    #   # Predict forecast with Prophet.   
-    #   df_train = data[['Date','Close']].copy()
-    #   df_train['Close'] = df_train['Close'].values.flatten()  # Ensuring it's 1D
-    #   df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
+      # Predict forecast with Prophet.   
+      #df_train = data[['Date','Close']].copy()
+      df_train = data['Close'].copy()
+      df_train['Close'] = df_train['Close'].values.flatten()  # Ensuring it's 1D
+      df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
     
-    #   m = Prophet()
-    #   m.fit(df_train)
-    #   future = m.make_future_dataframe(periods=period)
-    #   forecast = m.predict(future)
+      m = Prophet()
+      m.fit(df_train)
+      future = m.make_future_dataframe(periods=period)
+      forecast = m.predict(future)
     
     
-    #   # Show and plot forecast
-    #   st.subheader(f'Forecast data of {ticker}')
-    #   st.write(forecast.tail())
+      # Show and plot forecast
+      st.subheader(f'Forecast data of {ticker}')
+      st.write(forecast.tail())
        
-    #   st.write(f'**Forecast plot for {n_years} year(s)**')
-    #   fig1 = plot_plotly(m, forecast)
-    #   st.plotly_chart(fig1)
-    #   st.write("**In the above plot, ds = datastamp or Date and y = Closing Price**")
+      st.write(f'**Forecast plot for {n_years} year(s)**')
+      fig1 = plot_plotly(m, forecast)
+      st.plotly_chart(fig1)
+      st.write("**In the above plot, ds = datastamp or Date and y = Closing Price**")
     
     
-    #   st.write("**Forecast components**")
-    #   fig2 = m.plot_components(forecast)
-    #   st.write(fig2)
+      st.write("**Forecast components**")
+      fig2 = m.plot_components(forecast)
+      st.write(fig2)
 
 
     
