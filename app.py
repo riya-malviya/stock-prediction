@@ -681,8 +681,9 @@ st.title('Stock Dashboard')
 ticker = st.sidebar.text_input('Ticker', 'AAPL')
 today = date.today()
 default_date = today - timedelta(days=111)
+default_end_date = today - timedelta(days=1)
 start_date = st.sidebar.date_input("Start Date", default_date)
-end_date = st.sidebar.date_input('End Date')
+end_date = st.sidebar.date_input("End Date", default_end_date)
 
 # Fetch stock data from Yahoo Finance
 def fetch_data(ticker, start, end):
@@ -710,7 +711,7 @@ else:
     # Prepare training data with proper date handling
     def prepare_data_for_prophet(data):
         # Ensure 'Date' is properly parsed as datetime
-        data['Date'] = pd.to_datetime(data.index, format='%Y-%m-%d', errors='coerce')
+        data['Date'] = pd.to_datetime(data.index, errors='coerce')
 
         # Drop rows with invalid dates
         if data['Date'].isna().sum() > 0:
