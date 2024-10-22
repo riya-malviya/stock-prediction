@@ -118,38 +118,38 @@ else:
         st.subheader(f'Raw data of {ticker}')
         st.dataframe(data.tail(), width=900)
     
-        # # Prepare the data for Prophet
-        # df_train = prepare_data_for_prophet(data)
+        # Prepare the data for Prophet
+        df_train = prepare_data_for_prophet(data)
     
-        # if df_train.empty:
-        #     st.error("Training data is empty after processing.")
-        # else:
-        #     # Additional check for invalid date values
-        #     if df_train['ds'].isna().sum() > 0:
-        #         st.error(f"Found invalid date values after processing. Please check your data.")
-        #     else:
-        #         # Function to fit the Prophet model
-        #         def fit_prophet_model(df_train):
-        #             m = Prophet()
-        #             m.fit(df_train)
-        #             return m
+        if df_train.empty:
+            st.error("Training data is empty after processing.")
+        else:
+            # Additional check for invalid date values
+            if df_train['ds'].isna().sum() > 0:
+                st.error(f"Found invalid date values after processing. Please check your data.")
+            else:
+                # Function to fit the Prophet model
+                def fit_prophet_model(df_train):
+                    m = Prophet()
+                    m.fit(df_train)
+                    return m
 
-        #         # Fit the model and make predictions
-        #         model = fit_prophet_model(df_train)
-        #         future = model.make_future_dataframe(periods=period)
-        #         forecast = model.predict(future)
+                # Fit the model and make predictions
+                model = fit_prophet_model(df_train)
+                future = model.make_future_dataframe(periods=period)
+                forecast = model.predict(future)
     
-        #         # Show and plot forecast
-        #         st.subheader(f'Forecast data of {ticker}')
-        #         st.write(forecast.tail())
+                # Show and plot forecast
+                st.subheader(f'Forecast data of {ticker}')
+                st.write(forecast.tail())
     
-        #         st.write(f'**Forecast plot for {n_years} year(s)**')
-        #         fig1 = plot_plotly(model, forecast)
-        #         st.plotly_chart(fig1)
+                st.write(f'**Forecast plot for {n_years} year(s)**')
+                fig1 = plot_plotly(model, forecast)
+                st.plotly_chart(fig1)
     
-        #         st.write("**Forecast components**")
-        #         fig2 = model.plot_components(forecast)
-        #         st.write(fig2)
+                st.write("**Forecast components**")
+                fig2 = model.plot_components(forecast)
+                st.write(fig2)
 
         
         # Plot raw data
@@ -164,29 +164,29 @@ else:
     
     
       # Predict forecast with Prophet.
-        df_train = data[['Date','Close']]
-        df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
+      #   df_train = data[['Date','Close']]
+      #   df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
      
     
-        m = Prophet()
-        m.fit(df_train)
-        future = m.make_future_dataframe(periods=period)
-        forecast = m.predict(future)
+      #   m = Prophet()
+      #   m.fit(df_train)
+      #   future = m.make_future_dataframe(periods=period)
+      #   forecast = m.predict(future)
     
     
-      # Show and plot forecast
-        st.subheader(f'Forecast data of {ticker}')
-        st.write(forecast.tail())
+      # # Show and plot forecast
+      #   st.subheader(f'Forecast data of {ticker}')
+      #   st.write(forecast.tail())
        
-        st.write(f'**Forecast plot for {n_years} year(s)**')
-        fig1 = plot_plotly(m, forecast)
-        st.plotly_chart(fig1)
-        st.write("**In the above plot, ds = datastamp or Date and y = Closing Price**")
+      #   st.write(f'**Forecast plot for {n_years} year(s)**')
+      #   fig1 = plot_plotly(m, forecast)
+      #   st.plotly_chart(fig1)
+      #   st.write("**In the above plot, ds = datastamp or Date and y = Closing Price**")
     
     
-        st.write("**Forecast components**")
-        fig2 = m.plot_components(forecast)
-        st.write(fig2)
+      #   st.write("**Forecast components**")
+      #   fig2 = m.plot_components(forecast)
+      #   st.write(fig2)
     
         ##### Comparison page
     with comparison:
