@@ -51,8 +51,6 @@ data = fetch_data(ticker, start_date, end_date)
 #     company_code = data['quotes'][0]['symbol']
 #     return company_code
 
-
-
 # st.sidebar.write("To get ticker symbol-")
 # company_name = st.sidebar.text_input("Enter the company's name:")
 # if company_name:
@@ -67,8 +65,7 @@ data = fetch_data(ticker, start_date, end_date)
 if data.empty:
   st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
 else:
-    
-    fig=px.line(data, x=data.index, y=data['Adj Close'].values.flatten(), title=ticker)
+    fig=px.line(data, x=data.index, y=data['Adj Close'], title=ticker)
     st.plotly_chart(fig)
     pricing_data, forecast_data, comparison, news = st.tabs(["**Pricing Data**", "**Forecast Data**", "**Comparison**", "**News**"])
     
@@ -84,8 +81,9 @@ else:
           color = '#eb4034'
         return f'color:{color}'
     
+    
       data2= data
-      data2['% Change'] = data ['Adj Close']/data ['Adj Close'].shift(1) - 1  
+      data2['% Change'] = data ['Adj Close']/data ['Adj Close'].shift(1) - 1
       st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400, )
     
     
@@ -94,8 +92,7 @@ else:
       stdev = np.std(data2['% Change'])*np.sqrt(252)
       st.write('**Standard Deviation is**',stdev*100, '**%**')
       st.write('**Risk Adj. Return is**', annual_return/(stdev*100))
-
- 
+    
     
     ##### Forecast data page
     with forecast_data:
@@ -123,20 +120,21 @@ else:
       st.dataframe(data.tail(), width=900)
     
     
-      # # Plot raw data
-      # def plot_raw_data():
-      #   fig = go.Figure()
-      #   fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
-      #   fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
-      #   fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
-      #   st.plotly_chart(fig)
+      # Plot raw data
+      def plot_raw_data():
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
+        fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
+        st.plotly_chart(fig)
      
-      # plot_raw_data()
+      plot_raw_data()
     
     
-      # Predict forecast with Prophet.   
+      # Predict forecast with Prophet.
       df_train = data[['Date','Close']]
       df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
+     
     
       m = Prophet()
       m.fit(df_train)
@@ -157,8 +155,6 @@ else:
       st.write("**Forecast components**")
       fig2 = m.plot_components(forecast)
       st.write(fig2)
-
-
     
     ##### Comparison
     with comparison:
@@ -183,7 +179,7 @@ else:
     
     
       st.subheader(f'Price of {ticker} vs MA50')
-      ma_50_days = data.Close.rolling(50).mean().values.flatten()
+      ma_50_days = data.Close.rolling(50).mean()
       fig1 = plt.figure(figsize=(8,6))
       plt.plot(ma_50_days, 'r')
       plt.plot(data.Close, 'g')
@@ -192,7 +188,7 @@ else:
     
     
       st.subheader(f'Price of {ticker} vs MA50 vs MA100')
-      ma_100_days = data.Close.rolling(100).mean().values.flatten()
+      ma_100_days = data.Close.rolling(100).mean()
       fig2 = plt.figure(figsize=(8,6))
       plt.plot(ma_50_days, 'r')
       plt.plot(ma_100_days, 'b')
@@ -202,7 +198,7 @@ else:
     
     
       st.subheader(f'Price of {ticker} vs MA100 vs MA200')
-      ma_200_days = data.Close.rolling(200).mean().values.flatten()
+      ma_200_days = data.Close.rolling(200).mean()
       fig3 = plt.figure(figsize=(8,6))
       plt.plot(ma_100_days, 'r')
       plt.plot(ma_200_days, 'b')
@@ -251,6 +247,5 @@ else:
                 st.write("---")  # Divider between articles
         else:
             st.write(f'No recent news found for {ticker}.')
-    
 
 
