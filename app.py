@@ -135,21 +135,9 @@ else:
       df_train = data[['Date','Close']]
       df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
      
-    # Convert the 'ds' column to datetime
-      df_train['ds'] = pd.to_datetime(df_train['ds'], errors='coerce')
-        
-        # Drop rows with NaT in 'ds' or NaN in 'y'
-      df_train = df_train.dropna()
-        
-        # Check if df_train is empty after dropping NaNs
-      if df_train.empty:
-          st.error("The training data is empty after processing. Please check the data.")
-      else:
-          # Initialize and fit the Prophet model
-          m = Prophet()
-          m.fit(df_train)
-
-        # Create future dates for prediction
+    
+      m = Prophet()
+      m.fit(df_train)
       future = m.make_future_dataframe(periods=period)
       forecast = m.predict(future)
 
