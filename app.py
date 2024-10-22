@@ -710,7 +710,7 @@ else:
     # Prepare training data with proper date handling
     def prepare_data_for_prophet(data):
         # Ensure 'Date' is properly parsed as datetime
-        data['Date'] = pd.to_datetime(data.index, errors='coerce')
+        data['Date'] = pd.to_datetime(data.index, format='%Y-%m-%d', errors='coerce')
 
         # Drop rows with invalid dates
         if data['Date'].isna().sum() > 0:
