@@ -1,94 +1,33 @@
-# import streamlit as st
-
-# import yfinance as yf
-# import pandas as pd
-# import numpy as np
-# import os
-# import matplotlib.pyplot as plt
-# import plotly.express as px
-# import requests
-
-
-# from datetime import date, timedelta
-# from prophet import Prophet
-# from prophet.plot import plot_plotly
-# from plotly import graph_objs as go
-
-
-# st.title('Stock Dashboard')
-
-# ticker=st.sidebar.text_input('Ticker', 'F')
-# today = date.today()
-# default_date = today - timedelta(days=111)
-# default_end_date = today - timedelta(days=2)
-# start_date = st.sidebar.date_input("Start Date", default_date)
-# end_date = st.sidebar.date_input('End Date', default_end_date)
-
-
-# data=yf.download(ticker, start=start_date, end=end_date)
-
-# # Function to Fetch Data
-# def fetch_data(ticker, start, end):
-#     try:
-#         data = yf.download(ticker, start=start, end=end)
-#         return data
-#     except Exception as e:
-#         st.write(f"Error fetching data: {e}")
-#         return pd.DataFrame()
-
-# # Fetch data for entered ticker
-# data = fetch_data(ticker, start_date, end_date)
-
-
-# # def get_ticker (company_name):
-# #     url = "https://query2.finance.yahoo.com/v1/finance/search"
-# #     url = url.replace(" ", "%20")
-# #     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-# #     params = {"q": company_name, "quotes_count": 1, "country": "United States"}
-
-# #     res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
-# #     data = res.json()
-
-# #     company_code = data['quotes'][0]['symbol']
-# #     return company_code
-
-# # st.sidebar.write("To get ticker symbol-")
-# # company_name = st.sidebar.text_input("Enter the company's name:")
-# # if company_name:
-# #     # Fetch and display the company ticker symbol
-# #     ticker_symbol = get_ticker(company_name)
-# #     if ticker_symbol:
-# #         st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
-# #     else:
-# #         st.sidebar.write('No ticker symbol found for the given company name.')
-
-
-# if data.empty:
-
 import streamlit as st
+
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from datetime import date, timedelta
-from prophet import Prophet
-from prophet.plot import plot_plotly
+import os
+import matplotlib.pyplot as plt
 import plotly.express as px
 import requests
 
+
+from datetime import date, timedelta
+from prophet import Prophet
+from prophet.plot import plot_plotly
+from plotly import graph_objs as go
+
+
 st.title('Stock Dashboard')
 
-ticker = st.sidebar.text_input('Ticker', 'F')
+ticker=st.sidebar.text_input('Ticker', 'F')
 today = date.today()
 default_date = today - timedelta(days=111)
 start_date = st.sidebar.date_input("Start Date", default_date)
-end_date = st.sidebar.date_input('End Date', today)  # Set default end date to today
+end_date = st.sidebar.date_input('End Date', today)
+
+
+data=yf.download(ticker, start=start_date, end=end_date)
 
 # Function to Fetch Data
 def fetch_data(ticker, start, end):
-    if start > end:
-        st.error("Start date must be before end date.")
-        return pd.DataFrame()  # Return an empty DataFrame
-
     try:
         data = yf.download(ticker, start=start, end=end)
         return data
@@ -98,6 +37,30 @@ def fetch_data(ticker, start, end):
 
 # Fetch data for entered ticker
 data = fetch_data(ticker, start_date, end_date)
+
+
+def get_ticker (company_name):
+    url = "https://query2.finance.yahoo.com/v1/finance/search"
+    url = url.replace(" ", "%20")
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    params = {"q": company_name, "quotes_count": 1, "country": "United States"}
+
+    res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
+    data = res.json()
+
+    company_code = data['quotes'][0]['symbol']
+    return company_code
+
+st.sidebar.write("To get ticker symbol-")
+company_name = st.sidebar.text_input("Enter the company's name:")
+if company_name:
+    # Fetch and display the company ticker symbol
+    ticker_symbol = get_ticker(company_name)
+    if ticker_symbol:
+        st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
+    else:
+        st.sidebar.write('No ticker symbol found for the given company name.')
+
 
 if data.empty:
     st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
