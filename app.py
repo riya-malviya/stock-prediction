@@ -30,26 +30,38 @@ data=yf.download(ticker, start=start_date, end=end_date)
 def fetch_data(ticker, start, end):
     try:
         data = yf.download(ticker, start=start, end=end)
+        if data.empty:
+            st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
+            return pd.DataFrame()
         return data
     except Exception as e:
-        st.write(f"Error fetching data: {e}")
+        st.error(f"Error fetching data: {e}")
         return pd.DataFrame()
 
-# Fetch data for entered ticker
-data = fetch_data(ticker, start_date, end_date)
+def get_ticker(company_name):
+    try:
+        url = "https://query2.finance.yahoo.com/v1/finance/search"
+        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        params = {"q": company_name, "quotes_count": 1, "country": "United States"}
+        res = requests.get(url, params=params, headers={'User-Agent': user_agent})
+        data = res.json()
 
+        if 'quotes' in data and data['quotes']:
+            company_code = data['quotes'][0]['symbol']
+            return company_code
+        else:
+            st.error(f"No ticker symbol found for the company '{company_name}'.")
+            return None
+    except Exception as e:
+        st.error(f"Error fetching ticker symbol: {e}")
+        return None
 
-def get_ticker (company_name):
-    url = "https://query2.finance.yahoo.com/v1/finance/search"
-    url = url.replace(" ", "%20")
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-    params = {"q": company_name, "quotes_count": 1, "country": "United States"}
+# Check if the ticker is valid before fetching data
+if ticker and fetch_data(ticker, start_date, end_date).empty:
+    st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
+else:
+    data = fetch_data(ticker, start_date, end_date)
 
-    res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
-    data = res.json()
-
-    company_code = data['quotes'][0]['symbol']
-    return company_code
 
 st.sidebar.write("To get ticker symbol-")
 company_name = st.sidebar.text_input("Enter the company's name:")
