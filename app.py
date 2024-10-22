@@ -473,4 +473,9 @@ if not data.empty:
                 st.write(f"**Publisher**: {article['publisher']}")
                 published_time = convert_timestamp(article['providerPublishTime'])
                 st.write(f"**Published on**: {published_time}")
-                st
+                st.write(f"**Link**: [Read More]({article['link']})")
+        else:
+            st.write(f"No news articles found for {ticker}.")
+
+else:
+    st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
