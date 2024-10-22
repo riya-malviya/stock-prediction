@@ -765,6 +765,73 @@ else:
             st.write("**Forecast components**")
             fig2 = model.plot_components(forecast)
             st.write(fig2)
-
-
-
+        ##### Comparison page
+        with comparison:
+            st.header(f'Stock Market Comparison for {ticker}')
+    
+            data_train = pd.DataFrame(data.Close[0:int(len(data) * 0.80)])
+            data_test = pd.DataFrame(data.Close[int(len(data) * 0.80):])
+    
+            # Price comparison with moving averages (MA50, MA100, MA200)
+            st.subheader(f'Price of {ticker} vs MA50')
+            ma_50_days = data.Close.rolling(50).mean()
+            fig1 = plt.figure(figsize=(8, 6))
+            plt.plot(ma_50_days, 'r')
+            plt.plot(data.Close, 'g')
+            plt.show()
+            st.pyplot(fig1)
+    
+            st.subheader(f'Price of {ticker} vs MA50 vs MA100')
+            ma_100_days = data.Close.rolling(100).mean()
+            fig2 = plt.figure(figsize=(8, 6))
+            plt.plot(ma_50_days, 'r')
+            plt.plot(ma_100_days, 'b')
+            plt.plot(data.Close, 'g')
+            plt.show()
+            st.pyplot(fig2)
+    
+            st.subheader(f'Price of {ticker} vs MA100 vs MA200')
+            ma_200_days = data.Close.rolling(200).mean()
+            fig3 = plt.figure(figsize=(8, 6))
+            plt.plot(ma_100_days, 'r')
+            plt.plot(ma_200_days, 'b')
+            plt.plot(data.Close, 'g')
+            plt.show()
+            st.pyplot(fig3)
+    
+        ##### Stock news page
+        with news:
+            st.header(f'Latest News for {ticker}')
+    
+            def get_stock_news(ticker):
+                url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+                user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                response = requests.get(url, headers={'User-Agent': user_agent})
+    
+                if response.status_code == 200:
+                    data = response.json()
+                    return data.get('news', [])
+                else:
+                    return []
+    
+            def convert_timestamp(unix_timestamp):
+                return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
+    
+            news_articles = get_stock_news(ticker)
+    
+            if news_articles:
+                for i, article in enumerate(news_articles[:10]):
+                    st.subheader(f'News {i + 1}')
+                    st.write(f"**Title**: {article['title']}")
+                    st.write(f"**Publisher**: {article['publisher']}")
+    
+                    published_time = convert_timestamp(article['providerPublishTime'])
+                    st.write(f"**Published on**: {published_time}")
+    
+                    st.write(f"**Link**: [Read more]({article['link']})")
+                    st.write("---")
+            else:
+                st.write(f'No recent news found for {ticker}.')
+    
+    
+    
