@@ -81,15 +81,15 @@ else:
           color = '#eb4034'
         return f'color:{color}'
     
-    
+    ## changes
       data2= data
-      data2['% Change'] = data ['Adj Close']/data ['Adj Close'].shift(1) - 1
+      data2['% Change'] = data ['Adj Close']/data ['Adj Close'].shift(1) - 1.values.flatten()  
       st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400, )
     
     
       annual_return = data2['% Change'].mean()*252*100
       st.write('**Annual Return is**',annual_return, '**%**')
-      stdev = np.std(data2['% Change'])*np.sqrt(252)
+      stdev = np.std(data2['% Change'].values)*np.sqrt(252)
       st.write('**Standard Deviation is**',stdev*100, '**%**')
       st.write('**Risk Adj. Return is**', annual_return/(stdev*100))
     
@@ -131,10 +131,10 @@ else:
       plot_raw_data()
     
     
-      # Predict forecast with Prophet.
-      df_train = data[['Date','Close']]
+      # Predict forecast with Prophet.   changes
+      df_train = data[['Date','Close']].copy()
+      df_train['Close'] = df_train['Close'].values.flatten()  # Ensuring it's 1D
       df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
-     
     
       m = Prophet()
       m.fit(df_train)
@@ -179,7 +179,7 @@ else:
     
     
       st.subheader(f'Price of {ticker} vs MA50')
-      ma_50_days = data.Close.rolling(50).mean()
+      ma_50_days = data.Close.rolling(50).mean().values.flatten
       fig1 = plt.figure(figsize=(8,6))
       plt.plot(ma_50_days, 'r')
       plt.plot(data.Close, 'g')
@@ -188,7 +188,7 @@ else:
     
     
       st.subheader(f'Price of {ticker} vs MA50 vs MA100')
-      ma_100_days = data.Close.rolling(100).mean()
+      ma_100_days = data.Close.rolling(100).mean().values.flatten
       fig2 = plt.figure(figsize=(8,6))
       plt.plot(ma_50_days, 'r')
       plt.plot(ma_100_days, 'b')
@@ -198,7 +198,7 @@ else:
     
     
       st.subheader(f'Price of {ticker} vs MA100 vs MA200')
-      ma_200_days = data.Close.rolling(200).mean()
+      ma_200_days = data.Close.rolling(200).mean().values.flatten
       fig3 = plt.figure(figsize=(8,6))
       plt.plot(ma_100_days, 'r')
       plt.plot(ma_200_days, 'b')
