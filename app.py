@@ -258,6 +258,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly.express as px
 import requests
+import sklearn
 from datetime import date, timedelta
 from prophet import Prophet
 from prophet.plot import plot_plotly
