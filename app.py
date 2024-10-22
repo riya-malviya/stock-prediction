@@ -136,7 +136,6 @@ else:
     
       # Predict forecast with Prophet.   
       df_train = data[['Date','Close']]
-      df_train['Close'] = df_train['Close'].values.flatten()  # Ensuring it's 1D
       df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
     
       m = Prophet()
