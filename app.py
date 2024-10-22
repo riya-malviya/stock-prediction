@@ -91,7 +91,7 @@ else:
     
       annual_return = data2['% Change'].mean()*252*100
       st.write('**Annual Return is**',annual_return, '**%**')
-      stdev = np.std(data2['% Change'].values)*np.sqrt(252)
+      stdev = np.std(data2['% Change'])*np.sqrt(252)
       st.write('**Standard Deviation is**',stdev*100, '**%**')
       st.write('**Risk Adj. Return is**', annual_return/(stdev*100))
 
