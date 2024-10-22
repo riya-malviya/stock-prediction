@@ -83,7 +83,7 @@ else:
     
     ## changes
       data2= data
-      data2['% Change'] = data ['Adj Close']/data ['Adj Close'].shift(1) - 1.values.flatten()  
+      data2['% Change'] = data ['Adj Close']/data ['Adj Close'].shift(1) - 1  
       st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400, )
     
     
