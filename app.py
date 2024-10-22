@@ -89,27 +89,45 @@ else:
     
     ##### Forecast data page
     with forecast_data:
-        st.header(f'Forecast data of {ticker}')
+        # Set date range
+        START = "2015-01-01"
+        TODAY = date.today().strftime("%Y-%m-%d")
+        
+        
+        # Ticker input
+        # ticker = st.text_input('Enter Stock Ticker', 'AAPL')
+        
+        # Slider for selecting prediction period
         n_years = st.slider('**Years of prediction:**', 1, 4)
         period = n_years * 365
-    
-        # Prepare training data with proper date handling
-        def prepare_data_for_prophet(data):
-            # Ensure 'Date' is properly parsed as datetime
-            data['Date'] = pd.to_datetime(data.index, errors='coerce')
-    
-            # Drop rows with invalid dates
-            if data['Date'].isna().sum() > 0:
-                st.write(f"Found {data['Date'].isna().sum()} invalid dates, removing them.")
-                data = data.dropna(subset=['Date'])
-    
-            df_train = data[['Date', 'Close']].rename(columns={"Date": "ds", "Close": "y"})
-            return df_train.dropna()
-
-        # Load the data
+        
+        # Load stock data function
+        @st.cache_data
         def load_data(ticker):
-            data = yf.download(ticker, start_date, end_date)
+            data = yf.download(ticker, START, TODAY)
+            data.reset_index(inplace=True)
             return data
+        # st.header(f'Forecast data of {ticker}')
+        # n_years = st.slider('**Years of prediction:**', 1, 4)
+        # period = n_years * 365
+    
+        # # Prepare training data with proper date handling
+        # def prepare_data_for_prophet(data):
+        #     # Ensure 'Date' is properly parsed as datetime
+        #     data['Date'] = pd.to_datetime(data.index, errors='coerce')
+    
+        #     # Drop rows with invalid dates
+        #     if data['Date'].isna().sum() > 0:
+        #         st.write(f"Found {data['Date'].isna().sum()} invalid dates, removing them.")
+        #         data = data.dropna(subset=['Date'])
+    
+        #     df_train = data[['Date', 'Close']].rename(columns={"Date": "ds", "Close": "y"})
+        #     return df_train.dropna()
+
+        # # Load the data
+        # def load_data(ticker):
+        #     data = yf.download(ticker, start_date, end_date)
+        #     return data
     
         data_load_state = st.text('Loading data...')
         data = load_data(ticker)
@@ -118,8 +136,12 @@ else:
         st.subheader(f'Raw data of {ticker}')
         st.dataframe(data.tail(), width=900)
 
+        # Ensure the 'Date' column is in datetime format
+        data['Date'] = pd.to_datetime(data['Date'])
+
+
         # Prepare the data for Prophet
-        df_train = data[['Date', 'Close']]
+        df_train = data[['Date', 'Close']].copy()
         df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
         
         # Create and fit the model
