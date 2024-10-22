@@ -89,67 +89,67 @@ else:
     
     ##### Forecast data page
     with forecast_data:
-    st.header(f'Forecast data of {ticker}')
-    n_years = st.slider('**Years of prediction:**', 1, 4)
-    period = n_years * 365
+        st.header(f'Forecast data of {ticker}')
+        n_years = st.slider('**Years of prediction:**', 1, 4)
+        period = n_years * 365
+    
+        # Prepare training data with proper date handling
+        def prepare_data_for_prophet(data):
+            # Ensure 'Date' is properly parsed as datetime
+            data['Date'] = pd.to_datetime(data.index, errors='coerce')
+    
+            # Drop rows with invalid dates
+            if data['Date'].isna().sum() > 0:
+                st.write(f"Found {data['Date'].isna().sum()} invalid dates, removing them.")
+                data = data.dropna(subset=['Date'])
+    
+            df_train = data[['Date', 'Close']].rename(columns={"Date": "ds", "Close": "y"})
+            return df_train.dropna()
 
-    # Prepare training data with proper date handling
-    def prepare_data_for_prophet(data):
-        # Ensure 'Date' is properly parsed as datetime
-        data['Date'] = pd.to_datetime(data.index, errors='coerce')
-
-        # Drop rows with invalid dates
-        if data['Date'].isna().sum() > 0:
-            st.write(f"Found {data['Date'].isna().sum()} invalid dates, removing them.")
-            data = data.dropna(subset=['Date'])
-
-        df_train = data[['Date', 'Close']].rename(columns={"Date": "ds", "Close": "y"})
-        return df_train.dropna()
-
-    # Load the data
-    def load_data(ticker):
-        data = yf.download(ticker, start_date, end_date)
-        return data
-
-    data_load_state = st.text('Loading data...')
-    data = load_data(ticker)
-    data_load_state.text('Loading data... done!')
-
-    st.subheader(f'Raw data of {ticker}')
-    st.dataframe(data.tail(), width=900)
-
-    # Prepare the data for Prophet
-    df_train = prepare_data_for_prophet(data)
-
-    if df_train.empty:
-        st.error("Training data is empty after processing.")
-    else:
-        # Additional check for invalid date values
-        if df_train['ds'].isna().sum() > 0:
-            st.error(f"Found invalid date values after processing. Please check your data.")
+        # Load the data
+        def load_data(ticker):
+            data = yf.download(ticker, start_date, end_date)
+            return data
+    
+        data_load_state = st.text('Loading data...')
+        data = load_data(ticker)
+        data_load_state.text('Loading data... done!')
+    
+        st.subheader(f'Raw data of {ticker}')
+        st.dataframe(data.tail(), width=900)
+    
+        # Prepare the data for Prophet
+        df_train = prepare_data_for_prophet(data)
+    
+        if df_train.empty:
+            st.error("Training data is empty after processing.")
         else:
-            # Function to fit the Prophet model
-            def fit_prophet_model(df_train):
-                m = Prophet()
-                m.fit(df_train)
-                return m
+            # Additional check for invalid date values
+            if df_train['ds'].isna().sum() > 0:
+                st.error(f"Found invalid date values after processing. Please check your data.")
+            else:
+                # Function to fit the Prophet model
+                def fit_prophet_model(df_train):
+                    m = Prophet()
+                    m.fit(df_train)
+                    return m
 
-            # Fit the model and make predictions
-            model = fit_prophet_model(df_train)
-            future = model.make_future_dataframe(periods=period)
-            forecast = model.predict(future)
-
-            # Show and plot forecast
-            st.subheader(f'Forecast data of {ticker}')
-            st.write(forecast.tail())
-
-            st.write(f'**Forecast plot for {n_years} year(s)**')
-            fig1 = plot_plotly(model, forecast)
-            st.plotly_chart(fig1)
-
-            st.write("**Forecast components**")
-            fig2 = model.plot_components(forecast)
-            st.write(fig2)
+                # Fit the model and make predictions
+                model = fit_prophet_model(df_train)
+                future = model.make_future_dataframe(periods=period)
+                forecast = model.predict(future)
+    
+                # Show and plot forecast
+                st.subheader(f'Forecast data of {ticker}')
+                st.write(forecast.tail())
+    
+                st.write(f'**Forecast plot for {n_years} year(s)**')
+                fig1 = plot_plotly(model, forecast)
+                st.plotly_chart(fig1)
+    
+                st.write("**Forecast components**")
+                fig2 = model.plot_components(forecast)
+                st.write(fig2)
             
         ##### Comparison page
     with comparison:
