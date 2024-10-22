@@ -67,7 +67,8 @@ data = fetch_data(ticker, start_date, end_date)
 if data.empty:
   st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
 else:
-    fig=px.line(data, x=data.index, y=data['Adj Close'], title=ticker)
+    
+    fig=px.line(data, x=data.index, y=data['Adj Close'].values.flatten(), title=ticker)
     st.plotly_chart(fig)
     pricing_data, forecast_data, comparison, news = st.tabs(["**Pricing Data**", "**Forecast Data**", "**Comparison**", "**News**"])
     
