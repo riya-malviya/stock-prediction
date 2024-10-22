@@ -59,28 +59,36 @@ data = fetch_data(ticker, start_date, end_date)
 if data.empty:
     st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
 else:
-    fig = px.line(data, x=data.index, y=data['Adj Close'], title=ticker)
+    fig = px.line(data, x=data.index, y=data['Adj Close'].values.flatten(), title=ticker)
     st.plotly_chart(fig)
+    pricing_data, forecast_data, comparison, news = st.tabs(["**Pricing Data**", "**Forecast Data**", "**Comparison**", "**News**"])
 
         ##### Pricing data page
     with pricing_data:
-        st.header(f'Pricing Movements of {ticker}')
-        
-        def color_df(val):
-            color = '#72f292' if val > 0 else '#eb4034'
-            return f'color:{color}'
-        
-        data2 = data.copy()
-        data2['% Change'] = data['Adj Close'].pct_change()  # Simplified calculation
-        st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400)
-        
-        annual_return = data2['% Change'].mean() * 252 * 100
-        st.write('**Annual Return is**', annual_return, '**%**')
-        stdev = np.std(data2['% Change'].dropna()) * np.sqrt(252)
-        st.write('**Standard Deviation is**', stdev * 100, '**%**')
-        st.write('**Risk Adj. Return is**', annual_return / (stdev * 100))
+      st.header(f'Pricing Movements of {ticker}')
+    
+    
+      def color_df(val):
+        if val>0:
+          color = '#72f292'
+        else:
+          color = '#eb4034'
+        return f'color:{color}'
+    
+    
+      data2= data
+      data2['% Change'] = data ['Adj Close']/data ['Adj Close'].shift(1) - 1
+      st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400, )
+    
+    
+      annual_return = data2['% Change'].mean()*252*100
+      st.write('**Annual Return is**',annual_return, '**%**')
+      stdev = np.std(data2['% Change'])*np.sqrt(252)
+      st.write('**Standard Deviation is**',stdev*100, '**%**')
+      st.write('**Risk Adj. Return is**', annual_return/(stdev*100))
     
     ##### Forecast data page
+    with forecast_data:
     st.header(f'Forecast data of {ticker}')
     n_years = st.slider('**Years of prediction:**', 1, 4)
     period = n_years * 365
