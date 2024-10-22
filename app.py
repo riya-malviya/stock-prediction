@@ -59,7 +59,7 @@ if company_name:
 if data.empty:
     st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
 else:
-    fig = px.line(data, x=data.index, y=data['Adj Close']., title=ticker)
+    fig = px.line(data, x=data.index, y=data['Adj Close'], title=ticker)
     st.plotly_chart(fig)
 
         ##### Pricing data page
