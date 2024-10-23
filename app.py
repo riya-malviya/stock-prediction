@@ -127,13 +127,14 @@ else:
       data_train = data_train.dropna(subset=['y'])  # Remove rows with missing 'y' values
       data_train['y'] = pd.to_numeric(data_train['y'], errors='coerce')  # Ensure 'y' is numeric
       data_train = data_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
+      data['Date_'] = pd.to_datetime(data['Date_'])
     
     # Create and fit the Prophet model
       model = Prophet()
       model.fit(data_train)
 
     #     # Ensure the 'Date' column is in datetime format
-    #   data['Date'] = pd.to_datetime(data['Date'])
+    #   
 
     #     # Ensure that 'Date' and 'Close' columns exist
     #   print(data.columns)  # Check what columns are in your dataframe
