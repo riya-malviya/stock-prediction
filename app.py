@@ -51,16 +51,56 @@ data = fetch_data(ticker, start_date, end_date)
 
 
 
-def get_ticker (company_name):
+# def get_ticker (company_name):
+#     url = "https://query2.finance.yahoo.com/v1/finance/search"
+#     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+#     params = {"q": company_name, "quotes_count": 1, "country": "India"}
+
+#     res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
+#     data = res.json()
+
+#     company_code = data['quotes'][0]['symbol']
+#     return company_code
+
+# st.sidebar.write("To get ticker symbol-")
+# company_name = st.sidebar.text_input("Enter the company's name:")
+# if company_name:
+#     # Fetch and display the company ticker symbol
+#     ticker_symbol = get_ticker(company_name)
+#     if ticker_symbol:
+#         st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
+#     else:
+#         st.sidebar.write('No ticker symbol found for the given company name.')
+
+
+def get_ticker(company_name):
     url = "https://query2.finance.yahoo.com/v1/finance/search"
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
     params = {"q": company_name, "quotes_count": 1, "country": "India"}
 
     res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
-    data = res.json()
 
-    company_code = data['quotes'][0]['symbol']
-    return company_code
+    # Check if the response was successful
+    if res.status_code != 200:
+        st.sidebar.write(f"Error: Received status code {res.status_code}")
+        return None
+
+    # Print the response content for debugging
+    st.sidebar.write("Response Content:", res.text)  # Log the response content
+
+    try:
+        data = res.json()
+    except ValueError as e:
+        st.sidebar.write(f"JSON decode error: {str(e)}")
+        return None
+
+    # Ensure 'quotes' exists in the data
+    if 'quotes' in data and len(data['quotes']) > 0:
+        company_code = data['quotes'][0]['symbol']
+        return company_code
+    else:
+        st.sidebar.write('No ticker symbol found for the given company name.')
+        return None
 
 st.sidebar.write("To get ticker symbol-")
 company_name = st.sidebar.text_input("Enter the company's name:")
@@ -69,8 +109,7 @@ if company_name:
     ticker_symbol = get_ticker(company_name)
     if ticker_symbol:
         st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
-    else:
-        st.sidebar.write('No ticker symbol found for the given company name.')
+
 
 
 # Check if data is empty
