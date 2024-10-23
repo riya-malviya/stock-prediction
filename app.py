@@ -37,7 +37,7 @@ data = fetch_data(ticker, start_date, end_date)
 data = fetch_data(ticker, start_date, end_date)
 
 
-def get_ticker (company_name):
+def get_ticker (company):
     url = f"https://query2.finance.yahoo.com/v1/finance/search?q={company}"
     url = url.replace(" ", "%20")
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
@@ -50,12 +50,12 @@ def get_ticker (company_name):
     return company_code
 
 st.sidebar.write("To get ticker symbol-")
-company_name = st.sidebar.text_input("Enter the company's name:")
-if company_name:
+company = st.sidebar.text_input("Enter the company's name:")
+if company:
     # Fetch and display the company ticker symbol
-    ticker_symbol = get_ticker(company_name)
-    if ticker_symbol:
-        st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
+    ticker_symbol = get_ticker(company)
+    if ticker:
+        st.sidebar.write(f'The ticker symbol for {company} is: {ticker}')
     else:
         st.sidebar.write('No ticker symbol found for the given company name.')
 
