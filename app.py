@@ -42,7 +42,7 @@ data = fetch_data(ticker, start_date, end_date)
 
 def get_ticker(company_name):
     # Construct the search URL for Yahoo Finance
-    url = "https://finance.yahoo.com/quote/"
+    url = "https://www.nasdaq.com/market-activity/stocks/screener"
     query = f"{url}{company_name.replace(' ', '%20')}"
     
     response = requests.get(query)
