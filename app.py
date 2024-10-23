@@ -38,10 +38,10 @@ data = fetch_data(ticker, start_date, end_date)
 
 
 def get_ticker (company_name):
-    url = f"https://query2.finance.yahoo.com/v1/finance/search?q={company_name}"
+    url = f"https://query2.finance.yahoo.com/v1/finance/search?q={company}"
     url = url.replace(" ", "%20")
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-    params = {"q": company_name, "quotes_count": 1, "country": "United States"}
+    params = {"q": company, "quotes_count": 1, "country": "United States"}
 
     res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
     data = res.json()
