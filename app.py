@@ -9,6 +9,7 @@ import plotly.express as px
 import plotly.graph_objs as go
 import matplotlib.pyplot as plt
 import requests
+import feedparser
 
 
 st.title('Stock Dashboard')
@@ -192,36 +193,63 @@ else:
         ##### Stock news page
     with news:
         st.header(f'Latest News for {ticker}')
-    
-        def get_stock_news(ticker):
-            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
-            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-            response = requests.get(url, headers={'User-Agent': user_agent})
-    
-            if response.status_code == 200:
-                data = response.json()
-                return data.get('news', [])
+
+
+        def get_rss_news(ticker):
+            # Example RSS feed URL (you can replace this with a relevant RSS feed for stock news)
+            rss_url = f'https://news.google.com/rss/search?q={ticker}'
+            feed = feedparser.parse(rss_url)
+            return feed.entries
+        
+        def display_news(ticker):
+            st.header(f'Latest News for {ticker}')
+            
+            news_articles = get_rss_news(ticker)
+            
+            if news_articles:
+                for i, article in enumerate(news_articles[:10]):
+                    st.subheader(f'News {i + 1}')
+                    st.write(f"**Title**: {article.title}")
+                    st.write(f"**Published on**: {article.published}")
+                    st.write(f"**Link**: [Read more]({article.link})")
+                    st.write("---")
             else:
-                return []
+                st.write(f'No recent news found for {ticker}.')
+        
+        # Example usage
+        ticker = 'AAPL'  # Replace with dynamic input for stock ticker
+        display_news(ticker)
+
     
-        def convert_timestamp(unix_timestamp):
-            return datetime.utcfromtimestamp(unix_timestamp).strftime('%Y/%m/%d, %H:%M:%S')
+        # def get_stock_news(ticker):
+        #     url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+        #     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        #     response = requests.get(url, headers={'User-Agent': user_agent})
     
-        news_articles = get_stock_news(ticker)
+        #     if response.status_code == 200:
+        #         data = response.json()
+        #         return data.get('news', [])
+        #     else:
+        #         return []
     
-        if news_articles:
-            for i, article in enumerate(news_articles[:10]):
-                st.subheader(f'News {i + 1}')
-                st.write(f"**Title**: {article['title']}")
-                st.write(f"**Publisher**: {article['publisher']}")
+        # def convert_timestamp(unix_timestamp):
+        #     return datetime.utcfromtimestamp(unix_timestamp).strftime('%Y/%m/%d, %H:%M:%S')
     
-                published_time = convert_timestamp(article['providerPublishTime'])
-                st.write(f"**Published on**: {published_time}")
+        # news_articles = get_stock_news(ticker)
     
-                st.write(f"**Link**: [Read more]({article['link']})")
-                st.write("---")
-        else:
-            st.write(f'No recent news found for {ticker}.')
+        # if news_articles:
+        #     for i, article in enumerate(news_articles[:10]):
+        #         st.subheader(f'News {i + 1}')
+        #         st.write(f"**Title**: {article['title']}")
+        #         st.write(f"**Publisher**: {article['publisher']}")
+    
+        #         published_time = convert_timestamp(article['providerPublishTime'])
+        #         st.write(f"**Published on**: {published_time}")
+    
+        #         st.write(f"**Link**: [Read more]({article['link']})")
+        #         st.write("---")
+        # else:
+        #     st.write(f'No recent news found for {ticker}.')
     
 
 
