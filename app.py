@@ -240,26 +240,26 @@ else:
             print(f"Title: {article['title']}\nLink: {article['link']}\n")
 
 
-        with news:
-        st.header(f'Latest News for {ticker}')
+        # with news:
+        # st.header(f'Latest News for {ticker}')
         
-        news_articles = get_stock_news(ticker)
+        # news_articles = get_stock_news(ticker)
     
-        if news_articles:
-            # Loop through and display the news
-            for i, article in enumerate(news_articles[:10]):
-                st.subheader(f'News {i+1}')
-                st.write(f"**Title**: {article['title']}")
-                st.write(f"**Publisher**: {article['publisher']}")
+        # if news_articles:
+        #     # Loop through and display the news
+        #     for i, article in enumerate(news_articles[:10]):
+        #         st.subheader(f'News {i+1}')
+        #         st.write(f"**Title**: {article['title']}")
+        #         st.write(f"**Publisher**: {article['publisher']}")
     
-                # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
-                published_time = convert_timestamp(article['providerPublishTime'])
-                st.write(f"**Published on**: {published_time}")
+        #         # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
+        #         published_time = convert_timestamp(article['providerPublishTime'])
+        #         st.write(f"**Published on**: {published_time}")
                 
-                st.write(f"**Link**: [Read more]({article['link']})")
-                st.write("---")  # Divider between articles
-        else:
-            st.write(f'No recent news found for {ticker}.')
+        #         st.write(f"**Link**: [Read more]({article['link']})")
+        #         st.write("---")  # Divider between articles
+        # else:
+        #     st.write(f'No recent news found for {ticker}.')
 
 
         
