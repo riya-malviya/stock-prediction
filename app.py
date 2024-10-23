@@ -195,26 +195,50 @@ else:
         st.header(f'Latest News for {ticker}')
 
 
-        def get_rss_news(ticker):
-            # Example RSS feed URL (you can replace this with a relevant RSS feed for stock news)
-            rss_url = f'https://news.google.com/rss/search?q={ticker}'
-            feed = feedparser.parse(rss_url)
-            return feed.entries
         
+        # Set your NewsAPI key here
+        NEWS_API_KEY = 'your_api_key_here'
+        
+        # Function to fetch stock-related news
+        def get_stock_news(ticker):
+            url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&apikey=demo'
+            r = requests.get(url)
+            data = r.json()
+            
+            if response.status_code == 200:
+                data = response.json()
+                return data.get('articles', [])
+            else:
+                st.write(f"Error fetching news: {response.status_code}")
+                return []
+        
+        # Convert ISO timestamp to a more readable format
+        def convert_timestamp(iso_timestamp):
+            return datetime.strptime(iso_timestamp, '%Y-%m-%dT%H:%M:%SZ').strftime('%Y/%m/%d, %H:%M:%S')
+        
+        # Streamlit app to display news
         def display_news(ticker):
             st.header(f'Latest News for {ticker}')
             
-            news_articles = get_rss_news(ticker)
+            news_articles = get_stock_news(ticker)
             
             if news_articles:
                 for i, article in enumerate(news_articles[:10]):
                     st.subheader(f'News {i + 1}')
-                    st.write(f"**Title**: {article.title}")
-                    st.write(f"**Published on**: {article.published}")
-                    st.write(f"**Link**: [Read more]({article.link})")
+                    st.write(f"**Title**: {article['title']}")
+                    st.write(f"**Source**: {article['source']['name']}")
+                    
+                    published_time = convert_timestamp(article['publishedAt'])
+                    st.write(f"**Published on**: {published_time}")
+                    
+                    st.write(f"**Description**: {article['description']}")
+                    st.write(f"**Link**: [Read more]({article['url']})")
                     st.write("---")
             else:
                 st.write(f'No recent news found for {ticker}.')
         
-
-    
+        
+        
+        
+        
+                
