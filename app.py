@@ -41,24 +41,22 @@ data = fetch_data(ticker, start_date, end_date)
 
 
 def get_ticker(company_name):
-    # URL for the ADVFN companies page
-    url = "https://www.advfn.com/nyse/newyorkstockexchange.asp?companies"
-    response = requests.get(url)
+    # Construct the search URL for Yahoo Finance
+    url = "https://finance.yahoo.com/quote/"
+    query = f"{url}{company_name.replace(' ', '%20')}"
+    
+    response = requests.get(query)
     soup = BeautifulSoup(response.content, 'html.parser')
     
-    # Find the table containing the company tickers
-    table = soup.find('table', {'class': 'market_data'})
-    
-    if table:
-        rows = table.find_all('tr')
-        for row in rows[1:]:  # Skip the header row
-            columns = row.find_all('td')
-            if columns:
-                ticker = columns[0].text.strip()  # Ticker symbol
-                name = columns[1].text.strip()     # Company name
-                if company_name.lower() in name.lower():
-                    return ticker  # Return the ticker if the company name matches
-    return None
+    # Search for the ticker symbol in the page
+    ticker_symbol = None
+    try:
+        # Look for the element containing the ticker symbol
+        ticker_symbol = soup.find('h1').text.split()[0]  # Usually, the ticker is in the first part of the h1 tag
+    except Exception as e:
+        print(f"Error occurred: {e}")
+
+    return ticker_symbol
 
 # Streamlit sidebar input
 st.sidebar.write("To get ticker symbol-")
