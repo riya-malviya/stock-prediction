@@ -103,8 +103,6 @@ data = fetch_data(ticker, start_date, end_date)
     #     return None
 
 
-from googlesearch import search
-
 
 def name_convert(self):
 
