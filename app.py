@@ -191,52 +191,46 @@ else:
         st.pyplot(fig3)
     
         ##### Stock news page
-    with news:
-        st.header(f'Latest News for {ticker}')
-
-
-        
-        # Set your NewsAPI key here
-        NEWS_API_KEY = 'your_api_key_here'
-        
-        # Function to fetch stock-related news
         def get_stock_news(ticker):
-            url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={ticker}&apikey=demo'
-            r = requests.get(url)
-            data = r.json()
-            
-            if response.status_code == 200:
-                data = response.json()
-                return data.get('articles', [])
-            else:
-                st.write(f"Error fetching news: {response.status_code}")
-                return []
+        # url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+        url = f"https://finance.yahoo.com/quote/{ticker}/news/&newsCount=10"
         
-        # Convert ISO timestamp to a more readable format
-        def convert_timestamp(iso_timestamp):
-            return datetime.strptime(iso_timestamp, '%Y-%m-%dT%H:%M:%SZ').strftime('%Y/%m/%d, %H:%M:%S')
+        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        response = requests.get(url, headers={'User-Agent': user_agent})
+    
+        if response.status_code == 200:
+            data = response.json()
+            news = data.get('news', [])
+            return news
+        else:
+            return []
+    
+        def convert_timestamp(unix_timestamp):
+            return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
         
-        # Streamlit app to display news
-        def display_news(ticker):
+        # Yahoo Finance News Tab
+        with news:
             st.header(f'Latest News for {ticker}')
             
             news_articles = get_stock_news(ticker)
-            
+        
             if news_articles:
+                # Loop through and display the news
                 for i, article in enumerate(news_articles[:10]):
-                    st.subheader(f'News {i + 1}')
+                    st.subheader(f'News {i+1}')
                     st.write(f"**Title**: {article['title']}")
-                    st.write(f"**Source**: {article['source']['name']}")
-                    
-                    published_time = convert_timestamp(article['publishedAt'])
+                    st.write(f"**Publisher**: {article['publisher']}")
+        
+                    # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
+                    published_time = convert_timestamp(article['providerPublishTime'])
                     st.write(f"**Published on**: {published_time}")
                     
-                    st.write(f"**Description**: {article['description']}")
-                    st.write(f"**Link**: [Read more]({article['url']})")
-                    st.write("---")
+                    st.write(f"**Link**: [Read more]({article['link']})")
+                    st.write("---")  # Divider between articles
             else:
                 st.write(f'No recent news found for {ticker}.')
-        
+    
+            
         
         
         
