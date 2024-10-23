@@ -42,7 +42,7 @@ data = fetch_data(ticker, start_date, end_date)
 
 def get_ticker(company_name):
     # Construct the search URL for Yahoo Finance
-    url = "https://eoddata.com/symbols.aspx"
+    url = "https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=true&lang=en-US&region=US&scrIds=most_actives&start=0&count=25&enableSectorIndustryLabelFix=true&corsDomain=finance.yahoo.com"
     query = f"{url}{company_name.replace(' ', '%20')}"
     
     response = requests.get(query)
