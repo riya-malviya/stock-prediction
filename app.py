@@ -53,7 +53,7 @@ st.sidebar.write("To get ticker symbol-")
 company = st.sidebar.text_input("Enter the company's name:")
 if company:
     # Fetch and display the company ticker symbol
-    ticker_symbol = get_ticker(company)
+    ticker = get_ticker(company)
     if ticker:
         st.sidebar.write(f'The ticker symbol for {company} is: {ticker}')
     else:
