@@ -70,8 +70,10 @@ def get_ticker(company):
             ticker_symbol = quotes[0]['symbol']
             return ticker_symbol
         else:
+            print(f"No quotes found for '{company}'.")
             return None
     else:
+        print(f"Error: Unable to fetch data (status code: {response.status_code}).")
         return None
 
 
@@ -79,9 +81,9 @@ st.sidebar.write("To get ticker symbol-")
 company = st.sidebar.text_input("Enter the company's name:")
 if company:
     # Fetch and display the company ticker symbol
-    ticker = get_ticker(company)
-    if ticker:
-        st.sidebar.write(f'The ticker symbol for {company} is: {ticker}')
+    ticker_symbol = get_ticker(company)
+    if ticker_symbol:
+        st.sidebar.write(f'The ticker symbol for {company} is: {ticker_symbol}')
     else:
         st.sidebar.write('No ticker symbol found for the given company name.')
 
