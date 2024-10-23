@@ -234,7 +234,6 @@ else:
         
         # Yahoo Finance News Tab in Streamlit
         with news:
-            ticker=st.sidebar.text_input('Ticker', 'AAPL')
         
             if ticker:
                 st.header(f'Latest News for {ticker}')
