@@ -73,34 +73,56 @@ data = fetch_data(ticker, start_date, end_date)
 #         st.sidebar.write('No ticker symbol found for the given company name.')
 
 
-def get_ticker(company_name):
-    url = "https://query2.finance.yahoo.com/v1/finance/search"
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-    params = {"q": company_name, "quotes_count": 1, "country": "India"}
+# def get_ticker(company_name):
+#     url = "https://query2.finance.yahoo.com/v1/finance/search"
+#     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+#     params = {"q": company_name, "quotes_count": 1, "country": "India"}
 
-    res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
+#     res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
 
-    # Check if the response was successful
-    if res.status_code != 200:
-        st.sidebar.write(f"Error: Received status code {res.status_code}")
-        return None
+#     # Check if the response was successful
+#     if res.status_code != 200:
+#         st.sidebar.write(f"Error: Received status code {res.status_code}")
+#         return None
 
-    # Print the response content for debugging
-    st.sidebar.write("Response Content:", res.text)  # Log the response content
+    # # Print the response content for debugging
+    # st.sidebar.write("Response Content:", res.text)  # Log the response content
 
-    try:
-        data = res.json()
-    except ValueError as e:
-        st.sidebar.write(f"JSON decode error: {str(e)}")
-        return None
+    # try:
+    #     data = res.json()
+    # except ValueError as e:
+    #     st.sidebar.write(f"JSON decode error: {str(e)}")
+    #     return None
 
-    # Ensure 'quotes' exists in the data
-    if 'quotes' in data and len(data['quotes']) > 0:
-        company_code = data['quotes'][0]['symbol']
-        return company_code
+    # # Ensure 'quotes' exists in the data
+    # if 'quotes' in data and len(data['quotes']) > 0:
+    #     company_code = data['quotes'][0]['symbol']
+    #     return company_code
+    # else:
+    #     st.sidebar.write('No ticker symbol found for the given company name.')
+    #     return None
+
+
+from google import search
+from yahoo_finance import *
+
+def name_convert(self):
+
+    searchval = 'yahoo finance '+self
+    link = []
+    #limits to the first link
+    for url in search(searchval, tld='es', lang='es', stop=1):
+        link.append(url)
+
+    link = str(link[0])
+    link=link.split("/")
+    if link[-1]=='':
+        ticker=link[-2]
     else:
-        st.sidebar.write('No ticker symbol found for the given company name.')
-        return None
+        x=link[-1].split('=')
+        ticker=x[-1]
+
+    return(ticker)
 
 st.sidebar.write("To get ticker symbol-")
 company_name = st.sidebar.text_input("Enter the company's name:")
