@@ -115,22 +115,22 @@ else:
       st.dataframe(data.tail(), width=900)
 
         # Flatten the multi-index columns
-      df.columns = ['_'.join(col).strip() for col in data.columns.values]
+      data.columns = ['_'.join(col).strip() for col in data.columns.values]
     
     # Check the new column names (you can print this if needed)
-      print(df.columns)
+      print(data.columns)
     
     # Rename columns (adjust based on the actual column names after flattening)
-      df_train = df.rename(columns={"Date_": "ds", "Close_AAPL": "y"})
+      data_train = data.rename(columns={"Date_": "ds", "Close_AAPL": "y"})
     
     # Check for missing values or invalid data in 'y' column
-      df_train = df_train.dropna(subset=['y'])  # Remove rows with missing 'y' values
-      df_train['y'] = pd.to_numeric(df_train['y'], errors='coerce')  # Ensure 'y' is numeric
-      df_train = df_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
+      data_train = data_train.dropna(subset=['y'])  # Remove rows with missing 'y' values
+      data_train['y'] = pd.to_numeric(data_train['y'], errors='coerce')  # Ensure 'y' is numeric
+      data_train = data_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
     
     # Create and fit the Prophet model
       model = Prophet()
-      model.fit(df_train)
+      model.fit(data_train)
 
     #     # Ensure the 'Date' column is in datetime format
     #   data['Date'] = pd.to_datetime(data['Date'])
