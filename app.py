@@ -35,34 +35,63 @@ def fetch_data(ticker, start, end):
 
 data = fetch_data(ticker, start_date, end_date)
 
-# Fetch data for entered ticker
-data = fetch_data(ticker, start_date, end_date)
 
 
-data = fetch_data(ticker, start_date, end_date)
+def get_tickers_and_companies(query):
+    # URL to scrape
+    url = "https://eoddata.com/symbols.aspx"
+    
+    # Send a GET request to the URL
+    response = requests.get(url)
+    
+    # Check if the request was successful
+    if response.status_code != 200:
+        print("Failed to retrieve data")
+        return []
+    
+    # Parse the webpage content
+    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    # Find the table containing the ticker symbols and company names
+    table = soup.find('table', {'class': 'symbols'})
+    
+    # Initialize a list to store the results
+    results = []
+
+    # Loop through each row in the table
+    for row in table.find_all('tr')[1:]:  # Skip the header row
+        cols = row.find_all('td')
+        if len(cols) < 2:
+            continue
+            
+        ticker = cols[0].text.strip()
+        company_name = cols[1].text.strip()
+        
+        # Check if the search query is in the company name
+        if query.lower() in company_name.lower():
+            results.append((ticker, company_name))
+
+    return results
+
+# # Example usage
+# search_query = "Apple"  # Replace with your search query
+# tickers = get_tickers_and_companies(search_query)
 
 
-def get_ticker (company_name):
-    url = "https://finance.yahoo.com/lookup/"
-    url = url.replace(" ", "%20")
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-    params = {"q": company_name, "quotes_count": 1, "country": "United States"}
-
-    res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
-    data = res.json()
-
-    company_code = data['quotes'][0]['symbol']
-    return company_code
 
 st.sidebar.write("To get ticker symbol-")
 company_name = st.sidebar.text_input("Enter the company's name:")
-if company_name:
-    # Fetch and display the company ticker symbol
-    ticker_symbol = get_ticker(company_name)
-    if ticker_symbol:
-        st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
-    else:
-        st.sidebar.write('No ticker symbol found for the given company name.')
+# Print the results
+for ticker, company_name in tickers:
+    print(f'Ticker: {ticker}, Company Name: {company_name}')
+# if company_name:
+#     # Fetch and display the company ticker symbol
+#     ticker_symbol = get_ticker(company_name)
+#     if ticker_symbol:
+#         st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
+#     else:
+#         st.sidebar.write('No ticker symbol found for the given company name.')
+
 
 
 
