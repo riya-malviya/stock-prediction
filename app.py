@@ -140,7 +140,7 @@ else:
         
         # Plot forecast
     fig_forecast = plot_plotly(model, forecast)
-      st.plotly_chart(fig_forecast)
+    st.plotly_chart(fig_forecast)
         
         # Show forecast components (daily, weekly, yearly)
     st.subheader('Forecast Components')
