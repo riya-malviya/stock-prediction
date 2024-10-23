@@ -119,13 +119,13 @@ else:
 
 
         # Prepare the data for Prophet
-      df_train = data[['Date', 'Adj Close']].copy()
-      df_train = df_train.rename(columns={"Date": "ds", "Adj Close": "y"})
+      df_train = data[['Date', 'Close']].copy()
+      df_train = df_train.rename(columns={"Date": "ds", "Close": "Price"})
 
         # Check for missing values or invalid data
-      df_train = df_train.dropna(subset=['y'])
-      df_train['y'] = pd.to_numeric(df_train['y'], errors='coerce')
-      df_train = df_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
+      df_train = df_train.dropna(subset=['Price'])
+      df_train['Price'] = pd.to_numeric(df_train['Price'], errors='coerce')
+      df_train = df_train.dropna(subset=['Price'])  # Remove rows with invalid 'y' values
         
         # Create and fit the model
       model = Prophet()    #(daily_seasonality=True)
@@ -142,7 +142,7 @@ else:
         
         # Show and plot forecast
     st.subheader(f'Forecast data for {ticker}')
-    st.write(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail())
+    st.write(forecast.tail())
         
         # Plot forecast
     fig_forecast = plot_plotly(model, forecast)
