@@ -78,7 +78,8 @@ else:
     
       data2= data
       data2['% Change'] = data ['Adj Close']/data ['Adj Close'].shift(1) - 1
-      st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400)
+      # st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400)
+      st.dataframe(data2.style.map(color_df, subset=['% Change']), width=1000, height=400)
     
     
       annual_return = data2['% Change'].mean()*252*100
@@ -120,6 +121,11 @@ else:
         # Prepare the data for Prophet
       df_train = data[['Date', 'Close']].copy()
       df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
+
+        # Check for missing values or invalid data
+      df_train = df_train.dropna(subset=['y'])
+      df_train['y'] = pd.to_numeric(df_train['y'], errors='coerce')
+      df_train = df_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
         
         # Create and fit the model
       model = Prophet()    #(daily_seasonality=True)
