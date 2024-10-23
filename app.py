@@ -49,41 +49,26 @@ data = fetch_data(ticker, start_date, end_date)
 #     company_code = data['quotes'][0]['symbol']
 #     return company_code
 
-def get_ticker(company):
-    # Base URL for the Yahoo Finance search API
-    url = "https://query2.finance.yahoo.com/v1/finance/search"
-    
-    # Parameters to be sent with the request
-    params = {
-        'q': company  # The company name to search for
-    }
-    
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-    
-    # Making the GET request with parameters
-    response = requests.get(url, params=params, headers={'User-Agent': user_agent})
-    
-    if response.status_code == 200:
-        data = response.json()
-        quotes = data.get('quotes', [])
-        if quotes:
-            ticker_symbol = quotes[0]['symbol']
-            return ticker_symbol
-        else:
-            print(f"No quotes found for '{company}'.")
-            return None
-    else:
-        print(f"Error: Unable to fetch data (status code: {response.status_code}).")
-        return None
 
+
+def get_ticker(company_name):
+    yfinance = "https://query2.finance.yahoo.com/v1/finance/search"
+    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+    params = {"q": company_name, "quotes_count": 1, "country": "United States"}
+
+    res = requests.get(url=yfinance, params=params, headers={'User-Agent': user_agent})
+    data = res.json()
+
+    company_code = data['quotes'][0]['symbol']
+    return company_code
 
 st.sidebar.write("To get ticker symbol-")
-company = st.sidebar.text_input("Enter the company's name:")
-if company:
+company_name = st.sidebar.text_input("Enter the company's name:")
+if company_name:
     # Fetch and display the company ticker symbol
-    ticker_symbol = get_ticker(company)
+    ticker_symbol = get_ticker(company_name)
     if ticker_symbol:
-        st.sidebar.write(f'The ticker symbol for {company} is: {ticker_symbol}')
+        st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
     else:
         st.sidebar.write('No ticker symbol found for the given company name.')
 
