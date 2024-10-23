@@ -37,61 +37,6 @@ data = fetch_data(ticker, start_date, end_date)
 
 
 
-import requests
-from bs4 import BeautifulSoup
-
-def get_tickers_and_companies(query):
-    # URL to scrape
-    url = "https://eoddata.com/symbols.aspx"
-    
-    # Send a GET request to the URL
-    response = requests.get(url)
-    
-    # Check if the request was successful
-    if response.status_code != 200:
-        print("Failed to retrieve data")
-        return []
-    
-    # Parse the webpage content
-    soup = BeautifulSoup(response.content, 'html.parser')
-    
-    # Find the table containing the ticker symbols and company names
-    table = soup.find('table', {'class': 'symbols'})
-    
-    # Initialize a list to store the results
-    results = []
-
-    # Loop through each row in the table
-    for row in table.find_all('tr')[1:]:  # Skip the header row
-        cols = row.find_all('td')
-        if len(cols) < 2:
-            continue
-            
-        ticker = cols[0].text.strip()
-        company_name = cols[1].text.strip()
-        
-        # Check if the search query is in the company name
-        if query.lower() in company_name.lower():
-            results.append((ticker, company_name))
-
-    return results
-
-st.sidebar.write("To get ticker symbol-")
-company_name = st.sidebar.text_input("Enter the company's name:")
-
-if company_name:  # Check if the input is not empty
-    tickers = get_tickers_and_companies(company_name)
-
-    # Display the results in Streamlit
-    if tickers:
-        for ticker, company_name in tickers:
-            st.write(f'Ticker: {ticker}, Company Name: {company_name}')
-    else:
-        st.write("No matching companies found.")
-
-
-
-
 # Check if data is empty
 if data.empty:
     st.error(f'Ticker "{ticker}" is invalid or data is not available for the given date range.')
@@ -225,7 +170,7 @@ else:
     
         ##### Stock news page
         def get_stock_news(ticker):
-            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=20"
+            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
            
             
             user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
