@@ -127,7 +127,7 @@ else:
       data_train = data_train.dropna(subset=['y'])  # Remove rows with missing 'y' values
       data_train['y'] = pd.to_numeric(data_train['y'], errors='coerce')  # Ensure 'y' is numeric
       data_train = data_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
-      data['Date_'] = pd.to_datetime(data['Date_'])
+      data_train['ds'] = pd.to_datetime(data_train['ds']).dt.tz_localize(None)
     
     # Create and fit the Prophet model
       model = Prophet()
