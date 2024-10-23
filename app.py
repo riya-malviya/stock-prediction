@@ -216,40 +216,5 @@ else:
             else:
                 st.write(f'No recent news found for {ticker}.')
         
-        # Example usage
-        ticker = 'AAPL'  # Replace with dynamic input for stock ticker
-        display_news(ticker)
 
     
-        # def get_stock_news(ticker):
-        #     url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
-        #     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-        #     response = requests.get(url, headers={'User-Agent': user_agent})
-    
-        #     if response.status_code == 200:
-        #         data = response.json()
-        #         return data.get('news', [])
-        #     else:
-        #         return []
-    
-        # def convert_timestamp(unix_timestamp):
-        #     return datetime.utcfromtimestamp(unix_timestamp).strftime('%Y/%m/%d, %H:%M:%S')
-    
-        # news_articles = get_stock_news(ticker)
-    
-        # if news_articles:
-        #     for i, article in enumerate(news_articles[:10]):
-        #         st.subheader(f'News {i + 1}')
-        #         st.write(f"**Title**: {article['title']}")
-        #         st.write(f"**Publisher**: {article['publisher']}")
-    
-        #         published_time = convert_timestamp(article['providerPublishTime'])
-        #         st.write(f"**Published on**: {published_time}")
-    
-        #         st.write(f"**Link**: [Read more]({article['link']})")
-        #         st.write("---")
-        # else:
-        #     st.write(f'No recent news found for {ticker}.')
-    
-
-
