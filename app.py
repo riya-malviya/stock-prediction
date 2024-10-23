@@ -125,7 +125,8 @@ else:
       model = Prophet    #(daily_seasonality=True)
       model.fit(df_train)
         
-          return model
+    
+    return model
         
         # Create future dataframe
       future = model.make_future_dataframe(periods=period)
