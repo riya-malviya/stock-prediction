@@ -169,37 +169,79 @@ else:
         st.pyplot(fig3)
     
         ##### Stock news page
-        def get_stock_news(ticker):
-            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+        # def get_stock_news(ticker):
+        #     url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
            
             
+        #     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        #     response = requests.get(url, headers={'User-Agent': user_agent})
+        
+        #     if response.status_code == 200:
+        #         data = response.json()
+        #         news = data.get('news', [])
+        #         return news
+        #     else:
+        #         return []
+    
+        # def convert_timestamp(unix_timestamp):
+        #     return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
+        
+        # # Yahoo Finance News Tab
+        # with news:
+        #     st.header(f'Latest News for {ticker}')
+            
+        #     news_articles = get_stock_news(ticker)
+        
+        #     if news_articles:
+        #         # Loop through and display the news
+        #         for i, article in enumerate(news_articles[:10]):
+        #             st.subheader(f'News {i+1}')
+        #             st.write(f"**Title**: {article['title']}")
+        #             st.write(f"**Publisher**: {article['publisher']}")
+        
+        #             # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
+        #             published_time = convert_timestamp(article['providerPublishTime'])
+        #             st.write(f"**Published on**: {published_time}")
+                    
+        #             st.write(f"**Link**: [Read more]({article['link']})")
+        #             st.write("---")  # Divider between articles
+        #     else:
+        #         st.write(f'No recent news found for {ticker}.')
+    
+            
+
+        
+        def get_stock_news(ticker):
+            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
             user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
             response = requests.get(url, headers={'User-Agent': user_agent})
-        
+            
             if response.status_code == 200:
                 data = response.json()
+                print(data)  # Debugging line
                 news = data.get('news', [])
                 return news
             else:
+                print(f"Error fetching news: {response.status_code} - {response.text}")
                 return []
-    
+        
         def convert_timestamp(unix_timestamp):
             return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
         
         # Yahoo Finance News Tab
-        with news:
+        with st.container():  # Ensure `news` is defined
+            ticker = "AAPL"  # Set a default ticker for testing
             st.header(f'Latest News for {ticker}')
             
             news_articles = get_stock_news(ticker)
-        
+            
             if news_articles:
-                # Loop through and display the news
                 for i, article in enumerate(news_articles[:10]):
-                    st.subheader(f'News {i+1}')
+                    st.subheader(f'News {i + 1}')
                     st.write(f"**Title**: {article['title']}")
                     st.write(f"**Publisher**: {article['publisher']}")
-        
-                    # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
+                    
+                    # Convert and display the date and time
                     published_time = convert_timestamp(article['providerPublishTime'])
                     st.write(f"**Published on**: {published_time}")
                     
@@ -207,8 +249,6 @@ else:
                     st.write("---")  # Divider between articles
             else:
                 st.write(f'No recent news found for {ticker}.')
-    
-            
         
         
         
