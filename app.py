@@ -2,14 +2,16 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from datetime import date, timedelta, datetime
-from prophet import Prophet
-from prophet.plot import plot_plotly
 import plotly.express as px
 import plotly.graph_objs as go
 import matplotlib.pyplot as plt
 import requests
 import feedparser
+from datetime import date, timedelta, datetime
+from prophet import Prophet
+from prophet.plot import plot_plotly
+from bs4 import BeautifulSoup
+
 
 
 st.title('Stock Dashboard')
@@ -37,20 +39,28 @@ data = fetch_data(ticker, start_date, end_date)
 data = fetch_data(ticker, start_date, end_date)
 
 
-def get_ticker (company_name):
+
+def get_ticker(company_name):
+    # URL for the ADVFN companies page
     url = "https://www.advfn.com/nyse/newyorkstockexchange.asp?companies"
-    # url = url.replace(" ", "%20")
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-    # params = {"q": company, "quotes_count": 1, "country": "United States"}
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    # Find the table containing the company tickers
+    table = soup.find('table', {'class': 'market_data'})
+    
+    if table:
+        rows = table.find_all('tr')
+        for row in rows[1:]:  # Skip the header row
+            columns = row.find_all('td')
+            if columns:
+                ticker = columns[0].text.strip()  # Ticker symbol
+                name = columns[1].text.strip()     # Company name
+                if company_name.lower() in name.lower():
+                    return ticker  # Return the ticker if the company name matches
+    return None
 
-    res = requests.get(url=url, headers={'User-Agent': user_agent})
-    data = res.json()
-
-    company_code = data['quotes'][0]['symbol']
-    return company_code
-
-
-
+# Streamlit sidebar input
 st.sidebar.write("To get ticker symbol-")
 company_name = st.sidebar.text_input("Enter the company's name:")
 if company_name:
@@ -58,6 +68,9 @@ if company_name:
     ticker_symbol = get_ticker(company_name)
     if ticker_symbol:
         st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
+    else:
+        st.sidebar.write('No ticker symbol found for the given company name.')
+
 
 
 
