@@ -170,48 +170,99 @@ else:
     
         ##### Stock news page
     
-        def get_stock_news(ticker):
-            #url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
-            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}/news/&newsCount=100"
+        # def get_stock_news(ticker):
+        #     #url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+        #     url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}/news/&newsCount=100"
             
            
             
-            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-            response = requests.get(url, headers={'User-Agent': user_agent})
+        #     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        #     response = requests.get(url, headers={'User-Agent': user_agent})
         
-            if response.status_code == 200:
-                data = response.json()
-                news = data.get('news', [])
-                return news
-            else:
-                return []
+        #     if response.status_code == 200:
+        #         data = response.json()
+        #         news = data.get('news', [])
+        #         return news
+        #     else:
+        #         return []
     
-        def convert_timestamp(unix_timestamp):
-            return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
+        # def convert_timestamp(unix_timestamp):
+        #     return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
         
-        # Yahoo Finance News Tab
-        with news:
-            st.header(f'Latest News for {ticker}')
+        # # Yahoo Finance News Tab
+        # with news:
+        #     st.header(f'Latest News for {ticker}')
             
-            news_articles = get_stock_news(ticker)
+        #     news_articles = get_stock_news(ticker)
         
-            if news_articles:
-                # Loop through and display the news
-                for i, article in enumerate(news_articles[:10]):
-                    st.subheader(f'News {i+1}')
-                    st.write(f"**Title**: {article['title']}")
-                    st.write(f"**Publisher**: {article['publisher']}")
+        #     if news_articles:
+        #         # Loop through and display the news
+        #         for i, article in enumerate(news_articles[:10]):
+        #             st.subheader(f'News {i+1}')
+        #             st.write(f"**Title**: {article['title']}")
+        #             st.write(f"**Publisher**: {article['publisher']}")
         
-                    # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
-                    published_time = convert_timestamp(article['providerPublishTime'])
-                    st.write(f"**Published on**: {published_time}")
+        #             # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
+        #             published_time = convert_timestamp(article['providerPublishTime'])
+        #             st.write(f"**Published on**: {published_time}")
                     
-                    st.write(f"**Link**: [Read more]({article['link']})")
-                    st.write("---")  # Divider between articles
-            else:
-                st.write(f'No recent news found for {ticker}.')
+        #             st.write(f"**Link**: [Read more]({article['link']})")
+        #             st.write("---")  # Divider between articles
+        #     else:
+        #         st.write(f'No recent news found for {ticker}.')
     
             
+        import requests
+        import streamlit as st
+        from datetime import datetime
+        
+        # Function to fetch news for a given ticker
+        def fetch_news(ticker):
+            # URL to query the news for the given ticker
+            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}/news/&newsCount=100"
+            
+            # Fetch the response
+            response = requests.get(url)
+            
+            # If response is successful, parse the JSON data
+            if response.status_code == 200:
+                news_data = response.json()
+                return news_data.get('news', [])
+            else:
+                st.error("Failed to fetch data from Yahoo Finance API.")
+                return []
+        
+        # Convert UNIX timestamp to readable format
+        def convert_time(unix_time):
+            return datetime.utcfromtimestamp(unix_time).strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Function to display the top 10 news articles
+        def display_news(news_articles):
+            for idx, article in enumerate(news_articles[:10]):
+                st.subheader(f"{idx + 1}. {article['title']}")
+                st.write(f"**Publisher**: {article['publisher']}")
+                st.write(f"**Published on**: {convert_time(article['providerPublishTime'])}")
+                st.markdown(f"[Read more]({article['link']})")
+                st.write("---")
+        
+        # Streamlit app main function
+        def main():
+            st.title("Yahoo Finance News Viewer")
+            
+            # Input field for the user to enter the ticker symbol
+            ticker = st.text_input("Enter stock ticker symbol (e.g., AAPL, TSLA):").upper()
+            
+            # If a ticker is entered, fetch and display the news
+            if ticker:
+                st.write(f"Fetching news for {ticker}...")
+                news_articles = fetch_news(ticker)
+                
+                if news_articles:
+                    display_news(news_articles)
+                else:
+                    st.write(f"No news available for {ticker}.")
+        
+
 
 
        
