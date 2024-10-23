@@ -43,7 +43,7 @@ data = fetch_data(ticker, start_date, end_date)
 
 
 def get_ticker (company_name):
-    url = "https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=true&lang=en-US&region=US&scrIds=most_actives&start=0&count=25&enableSectorIndustryLabelFix=true&corsDomain=finance.yahoo.com"
+    url = "https://finance.yahoo.com/lookup/"
     url = url.replace(" ", "%20")
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
     params = {"q": company_name, "quotes_count": 1, "country": "United States"}
