@@ -37,7 +37,7 @@ data = fetch_data(ticker, start_date, end_date)
 data = fetch_data(ticker, start_date, end_date)
 
 
-def get_ticker (company):
+def get_ticker (company_name):
     url = "https://www.advfn.com/nyse/newyorkstockexchange.asp?companies"
     # url = url.replace(" ", "%20")
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
