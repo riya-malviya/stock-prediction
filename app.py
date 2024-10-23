@@ -133,134 +133,24 @@ else:
       model = Prophet()
       model.fit(data_train)
 
-    #     # Ensure the 'Date' column is in datetime format
-    #   
-
-    #     # Ensure that 'Date' and 'Close' columns exist
-    #   print(data.columns)  # Check what columns are in your dataframe
-    
-    # # Prepare the data for Prophet
-    #   if 'Date' in data.columns and 'Close' in data.columns:
-    #       df_train = data[['Date', 'Close']].copy()
-    #       df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
-        
-    #     # Check for missing values or invalid data
-    #       df_train = df_train.dropna(subset=['y'])
-    #       df_train['y'] = pd.to_numeric(df_train['y'], errors='coerce')
-    #       df_train = df_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
-    
-    #     # Create and fit the model
-    #       model = Prophet()
-    #       model.fit(df_train)
-    #   else:
-    #       print("The required columns ('Date' and 'Close') are not in the dataframe.")
-
-
-
-      #   # Prepare the data for Prophet
-      # df_train = data[['Date', 'Close']].copy()
-      # df_train = df_train.rename(columns={"Date": "ds", "Close": "Price"})
-
-      #   # Check for missing values or invalid data
-      # df_train = df_train.dropna(subset=['Price'])
-      # df_train['Price'] = pd.to_numeric(df_train['Price'], errors='coerce')
-      # df_train = df_train.dropna(subset=['Price'])  # Remove rows with invalid 'y' values
-        
-      #   # Create and fit the model
-      # model = Prophet()    #(daily_seasonality=True)
-      # model.fit(df_train)
-        
-    
-    # return model
-        
-        # Create future dataframe
-    future = model.make_future_dataframe(periods=period)
+      future = model.make_future_dataframe(periods=period)
         
         # Predict future stock prices
-    forecast = model.predict(future)
+      forecast = model.predict(future)
         
         # Show and plot forecast
-    st.subheader(f'Forecast data for {ticker}')
-    st.write(forecast.tail())
+      st.subheader(f'Forecast data for {ticker}')
+      st.write(forecast.tail())
         
         # Plot forecast
-    fig_forecast = plot_plotly(model, forecast)
-    st.plotly_chart(fig_forecast)
+      fig_forecast = plot_plotly(model, forecast)
+      st.plotly_chart(fig_forecast)
         
         # Show forecast components (daily, weekly, yearly)
-    st.subheader('Forecast Components')
-    fig_components = model.plot_components(forecast)
-    st.write(fig_components)
-    
-        # Prepare the data for Prophet
-        # df_train = prepare_data_for_prophet(data)
-    
-        # if df_train.empty:
-        #     st.error("Training data is empty after processing.")
-        # else:
-        #     # Additional check for invalid date values
-        #     if df_train['ds'].isna().sum() > 0:
-        #         st.error(f"Found invalid date values after processing. Please check your data.")
-        #     else:
-        #         # Function to fit the Prophet model
-        #         def fit_prophet_model(df_train):
-        #             m = Prophet()
-        #             m.fit(df_train)
-        #             return m
-
-        #         # Fit the model and make predictions
-        #         model = fit_prophet_model(df_train)
-        #         future = model.make_future_dataframe(periods=period)
-        #         forecast = model.predict(future)
-    
-        #         # Show and plot forecast
-        #         st.subheader(f'Forecast data of {ticker}')
-        #         st.write(forecast.tail())
-    
-        #         st.write(f'**Forecast plot for {n_years} year(s)**')
-        #         fig1 = plot_plotly(model, forecast)
-        #         st.plotly_chart(fig1)
-    
-        #         st.write("**Forecast components**")
-        #         fig2 = model.plot_components(forecast)
-        #         st.write(fig2)
-
-        
-      #   Plot raw data
-      #   def plot_raw_data():
-      #     fig = go.Figure()
-      #     fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
-      #     fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="stock_close"))
-      #     fig.layout.update(title_text='Time Series data with Rangeslider', xaxis_rangeslider_visible=True)
-      #     st.plotly_chart(fig)
-     
-      #   plot_raw_data()
-    
-    
-      # Predict forecast with Prophet.
-      #   df_train = data[['Date','Close']]
-      #   df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
-     
-    
-      #   m = Prophet()
-      #   m.fit(df_train)
-      #   future = m.make_future_dataframe(periods=period)
-      #   forecast = m.predict(future)
-    
-    
-      # # Show and plot forecast
-      #   st.subheader(f'Forecast data of {ticker}')
-      #   st.write(forecast.tail())
-       
-      #   st.write(f'**Forecast plot for {n_years} year(s)**')
-      #   fig1 = plot_plotly(m, forecast)
-      #   st.plotly_chart(fig1)
-      #   st.write("**In the above plot, ds = datastamp or Date and y = Closing Price**")
-    
-    
-      #   st.write("**Forecast components**")
-      #   fig2 = m.plot_components(forecast)
-      #   st.write(fig2)
+      st.subheader('Forecast Components')
+      fig_components = model.plot_components(forecast)
+      st.write(fig_components)
+  
     
         ##### Comparison page
     with comparison:
