@@ -121,7 +121,7 @@ else:
       print(data.columns)
     
     # Rename columns (adjust based on the actual column names after flattening)
-      data_train = data.rename(columns={"Date_": "ds", "Close_AAPL": "y"})
+      data_train = data.rename(columns={"Date_": "ds", "Close_": "y"})
     
     # Check for missing values or invalid data in 'y' column
       data_train = data_train.dropna(subset=['y'])  # Remove rows with missing 'y' values
