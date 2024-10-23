@@ -123,12 +123,12 @@ def name_convert(self):
     return(ticker)
 
 st.sidebar.write("To get ticker symbol-")
-company_name = st.sidebar.text_input("Enter the company's name:")
-if company_name:
+self = st.sidebar.text_input("Enter the company's name:")
+if self:
     # Fetch and display the company ticker symbol
-    ticker_symbol = get_ticker(company_name)
+    ticker_symbol = name_convert(self)
     if ticker_symbol:
-        st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
+        st.sidebar.write(f'The ticker symbol for {self} is: {ticker_symbol}')
 
 
 
