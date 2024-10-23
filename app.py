@@ -192,18 +192,18 @@ else:
     
         ##### Stock news page
         def get_stock_news(ticker):
-        # url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
-        url = f"https://finance.yahoo.com/quote/{ticker}/news/&newsCount=10"
+            # url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+            url = f"https://finance.yahoo.com/quote/{ticker}/news/&newsCount=10"
+            
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+            response = requests.get(url, headers={'User-Agent': user_agent})
         
-        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-        response = requests.get(url, headers={'User-Agent': user_agent})
-    
-        if response.status_code == 200:
-            data = response.json()
-            news = data.get('news', [])
-            return news
-        else:
-            return []
+            if response.status_code == 200:
+                data = response.json()
+                news = data.get('news', [])
+                return news
+            else:
+                return []
     
         def convert_timestamp(unix_timestamp):
             return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
