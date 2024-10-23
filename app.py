@@ -33,31 +33,31 @@ def fetch_data(ticker, start, end):
 
 data = fetch_data(ticker, start_date, end_date)
 
-# # Fetch data for entered ticker
-# data = fetch_data(ticker, start_date, end_date)
+# Fetch data for entered ticker
+data = fetch_data(ticker, start_date, end_date)
 
 
-# def get_ticker (company_name):
-#     url = "https://query2.finance.yahoo.com/v1/finance/search"
-#     url = url.replace(" ", "%20")
-#     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-#     params = {"q": company_name, "quotes_count": 1, "country": "United States"}
+def get_ticker (company_name):
+    url = "https://query2.finance.yahoo.com/v1/finance/search?q={}"
+    url = url.replace(" ", "%20")
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    params = {"q": company_name, "quotes_count": 1, "country": "United States"}
 
-#     res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
-#     data = res.json()
+    res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
+    data = res.json()
 
-#     company_code = data['quotes'][0]['symbol']
-#     return company_code
+    company_code = data['quotes'][0]['symbol']
+    return company_code
 
-# st.sidebar.write("To get ticker symbol-")
-# company_name = st.sidebar.text_input("Enter the company's name:")
-# if company_name:
-#     # Fetch and display the company ticker symbol
-#     ticker_symbol = get_ticker(company_name)
-#     if ticker_symbol:
-#         st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
-#     else:
-#         st.sidebar.write('No ticker symbol found for the given company name.')
+st.sidebar.write("To get ticker symbol-")
+company_name = st.sidebar.text_input("Enter the company's name:")
+if company_name:
+    # Fetch and display the company ticker symbol
+    ticker_symbol = get_ticker(company_name)
+    if ticker_symbol:
+        st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
+    else:
+        st.sidebar.write('No ticker symbol found for the given company name.')
 
 # Check if data is empty
 if data.empty:
