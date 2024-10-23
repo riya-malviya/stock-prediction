@@ -39,26 +39,21 @@ data = fetch_data(ticker, start_date, end_date)
 data = fetch_data(ticker, start_date, end_date)
 
 
+data = fetch_data(ticker, start_date, end_date)
 
-def get_ticker(company_name):
-    # Construct the search URL for Yahoo Finance
+
+def get_ticker (company_name):
     url = "https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?formatted=true&lang=en-US&region=US&scrIds=most_actives&start=0&count=25&enableSectorIndustryLabelFix=true&corsDomain=finance.yahoo.com"
-    query = f"{url}{company_name.replace(' ', '%20')}"
-    
-    response = requests.get(query)
-    soup = BeautifulSoup(response.content, 'html.parser')
-    
-    # Search for the ticker symbol in the page
-    ticker_symbol = None
-    try:
-        # Look for the element containing the ticker symbol
-        ticker_symbol = soup.find('h1').text.split()[0]  # Usually, the ticker is in the first part of the h1 tag
-    except Exception as e:
-        print(f"Error occurred: {e}")
+    url = url.replace(" ", "%20")
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    params = {"q": company_name, "quotes_count": 1, "country": "United States"}
 
-    return ticker_symbol
+    res = requests.get(url=url, params=params, headers={'User-Agent': user_agent})
+    data = res.json()
 
-# Streamlit sidebar input
+    company_code = data['quotes'][0]['symbol']
+    return company_code
+
 st.sidebar.write("To get ticker symbol-")
 company_name = st.sidebar.text_input("Enter the company's name:")
 if company_name:
