@@ -37,6 +37,9 @@ data = fetch_data(ticker, start_date, end_date)
 
 
 
+import requests
+from bs4 import BeautifulSoup
+
 def get_tickers_and_companies(query):
     # URL to scrape
     url = "https://eoddata.com/symbols.aspx"
@@ -73,21 +76,18 @@ def get_tickers_and_companies(query):
 
     return results
 
-
-tickers = get_tickers_and_companies(query)
 st.sidebar.write("To get ticker symbol-")
 company_name = st.sidebar.text_input("Enter the company's name:")
-# Print the results
-for ticker, company_name in tickers:
-    print(f'Ticker: {ticker}, Company Name: {company_name}')
-# if company_name:
-#     # Fetch and display the company ticker symbol
-#     ticker_symbol = get_ticker(company_name)
-#     if ticker_symbol:
-#         st.sidebar.write(f'The ticker symbol for {company_name} is: {ticker_symbol}')
-#     else:
-#         st.sidebar.write('No ticker symbol found for the given company name.')
 
+if company_name:  # Check if the input is not empty
+    tickers = get_tickers_and_companies(company_name)
+
+    # Display the results in Streamlit
+    if tickers:
+        for ticker, company_name in tickers:
+            st.write(f'Ticker: {ticker}, Company Name: {company_name}')
+    else:
+        st.write("No matching companies found.")
 
 
 
