@@ -223,6 +223,7 @@ else:
                 return news
             else:
                 print(f"Error fetching news: {response.status_code} - {response.text}")
+                print(response.text)  # This will show the HTML response
                 return []
         
         def convert_timestamp(unix_timestamp):
