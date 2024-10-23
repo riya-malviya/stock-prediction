@@ -78,7 +78,7 @@ else:
     
       data2= data
       data2['% Change'] = data ['Adj Close']/data ['Adj Close'].shift(1) - 1
-      st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400, )
+      st.dataframe(data2.style.applymap(color_df, subset=['% Change']), width=1000, height=400)
     
     
       annual_return = data2['% Change'].mean()*252*100
@@ -90,82 +90,59 @@ else:
     ##### Forecast data page
     with forecast_data:
         # Set date range
-        START = "2015-01-01"
-        TODAY = date.today().strftime("%Y-%m-%d")
+      START = "2015-01-01"
+      TODAY = date.today().strftime("%Y-%m-%d")
         
-        
-        # Ticker input
-        # ticker = st.text_input('Enter Stock Ticker', 'AAPL')
-        
-        # Slider for selecting prediction period
-        n_years = st.slider('**Years of prediction:**', 1, 4)
-        period = n_years * 365
         
         # Load stock data function
-        @st.cache_data
-        def load_data(ticker):
-            data = yf.download(ticker, START, TODAY)
-            data.reset_index(inplace=True)
-            return data
-        # st.header(f'Forecast data of {ticker}')
-        # n_years = st.slider('**Years of prediction:**', 1, 4)
-        # period = n_years * 365
-    
-        # # Prepare training data with proper date handling
-        # def prepare_data_for_prophet(data):
-        #     # Ensure 'Date' is properly parsed as datetime
-        #     data['Date'] = pd.to_datetime(data.index, errors='coerce')
-    
-        #     # Drop rows with invalid dates
-        #     if data['Date'].isna().sum() > 0:
-        #         st.write(f"Found {data['Date'].isna().sum()} invalid dates, removing them.")
-        #         data = data.dropna(subset=['Date'])
-    
-        #     df_train = data[['Date', 'Close']].rename(columns={"Date": "ds", "Close": "y"})
-        #     return df_train.dropna()
+      @st.cache_data
+      def load_data(ticker):
+          data = yf.download(ticker, START, TODAY)
+          data.reset_index(inplace=True)
+          return data
 
-        # # Load the data
-        # def load_data(ticker):
-        #     data = yf.download(ticker, start_date, end_date)
-        #     return data
+                # Slider for selecting prediction period
+      st.header(f'Forecast data of {ticker}')
+      n_years = st.slider('**Years of prediction:**', 1, 4)
+      period = n_years * 365
     
-        data_load_state = st.text('Loading data...')
-        data = load_data(ticker)
-        data_load_state.text('Loading data... done!')
+      data_load_state = st.text('Loading data...')
+      data = load_data(ticker)
+      data_load_state.text('Loading data... done!')
     
-        st.subheader(f'Raw data of {ticker}')
-        st.dataframe(data.tail(), width=900)
+      st.subheader(f'Raw data of {ticker}')
+      st.dataframe(data.tail(), width=900)
 
         # Ensure the 'Date' column is in datetime format
-        data['Date'] = pd.to_datetime(data['Date'])
+      data['Date'] = pd.to_datetime(data['Date'])
 
 
         # Prepare the data for Prophet
-        df_train = data[['Date', 'Close']].copy()
-        df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
+      df_train = data[['Date', 'Close']].copy()
+      df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
         
         # Create and fit the model
-        model = Prophet(daily_seasonality=True)
-        model.fit(df_train)
+      model = Prophet      #(daily_seasonality=True)
+      model.fit(df_train)
         
         # Create future dataframe
-        future = model.make_future_dataframe(periods=period)
+      future = model.make_future_dataframe(periods=period)
         
         # Predict future stock prices
-        forecast = model.predict(future)
+      forecast = model.predict(future)
         
         # Show and plot forecast
-        st.subheader(f'Forecast data for {ticker}')
-        st.write(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail())
+      st.subheader(f'Forecast data for {ticker}')
+      st.write(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail())
         
         # Plot forecast
-        fig_forecast = plot_plotly(model, forecast)
-        st.plotly_chart(fig_forecast)
+      fig_forecast = plot_plotly(model, forecast)
+      st.plotly_chart(fig_forecast)
         
         # Show forecast components (daily, weekly, yearly)
-        st.subheader('Forecast Components')
-        fig_components = model.plot_components(forecast)
-        st.write(fig_components)
+      st.subheader('Forecast Components')
+      fig_components = model.plot_components(forecast)
+      st.write(fig_components)
     
         # Prepare the data for Prophet
         # df_train = prepare_data_for_prophet(data)
