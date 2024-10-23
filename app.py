@@ -169,140 +169,49 @@ else:
         st.pyplot(fig3)
     
         ##### Stock news page
-        # def get_stock_news(ticker):
-        #     url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+    
+        def get_stock_news(ticker):
+            #url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}/news/&newsCount=100"
+            
            
             
-        #     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-        #     response = requests.get(url, headers={'User-Agent': user_agent})
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+            response = requests.get(url, headers={'User-Agent': user_agent})
         
-        #     if response.status_code == 200:
-        #         data = response.json()
-        #         news = data.get('news', [])
-        #         return news
-        #     else:
-        #         return []
-    
-        # def convert_timestamp(unix_timestamp):
-        #     return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
-        
-        # # Yahoo Finance News Tab
-        # with news:
-        #     st.header(f'Latest News for {ticker}')
-            
-        #     news_articles = get_stock_news(ticker)
-        
-        #     if news_articles:
-        #         # Loop through and display the news
-        #         for i, article in enumerate(news_articles[:10]):
-        #             st.subheader(f'News {i+1}')
-        #             st.write(f"**Title**: {article['title']}")
-        #             st.write(f"**Publisher**: {article['publisher']}")
-        
-        #             # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
-        #             published_time = convert_timestamp(article['providerPublishTime'])
-        #             st.write(f"**Published on**: {published_time}")
-                    
-        #             st.write(f"**Link**: [Read more]({article['link']})")
-        #             st.write("---")  # Divider between articles
-        #     else:
-        #         st.write(f'No recent news found for {ticker}.')
-    
-            
-
-
-        import requests
-        from bs4 import BeautifulSoup
-        
-        # def get_stock_news(ticker):
-        #     url = f"https://finance.yahoo.com/quote/{ticker}/news"
-        #     response = requests.get(url)
-            
-        #     if response.status_code == 200:
-        #         soup = BeautifulSoup(response.text, 'html.parser')
-        #         articles = soup.find_all('li', class_='js-stream-content')
-                
-        #         news_list = []
-        #         for article in articles:
-        #             title = article.find('h3').text
-        #             link = article.find('a')['href']
-        #             news_list.append({'title': title, 'link': link})
-                
-        #         return news_list
-        #     else:
-        #         print(f"Error fetching news: {response.status_code}")
-        #         return []
-        
-        # # Example usage
-        # ticker = {ticker}
-        # news_articles = get_stock_news(ticker)
-        # for article in news_articles:
-        #     print(f"Title: {article['title']}\nLink: {article['link']}\n")
-
-
-        # with news:
-        #     st.header(f'Latest News for {ticker}')
-            
-        #     news_articles = get_stock_news(ticker)
-        
-        #     if news_articles:
-        #         # Loop through and display the news
-        #         for i, article in enumerate(news_articles[:10]):
-        #             st.subheader(f'News {i+1}')
-        #             st.write(f"**Title**: {article['title']}")
-        #             st.write(f"**Publisher**: {article['publisher']}")
-        
-        #             # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
-        #             published_time = convert_timestamp(article['providerPublishTime'])
-        #             st.write(f"**Published on**: {published_time}")
-                    
-        #             st.write(f"**Link**: [Read more]({article['link']})")
-        #             st.write("---")  # Divider between articles
-        #     else:
-        #         st.write(f'No recent news found for {ticker}.')
-    
-        import requests
-        from bs4 import BeautifulSoup
-        import streamlit as st
-        
-        # Function to scrape Yahoo Finance news
-        def get_stock_news(ticker):
-            url = f"https://finance.yahoo.com/quote/{ticker}/news"
-            response = requests.get(url)
-            
             if response.status_code == 200:
-                soup = BeautifulSoup(response.text, 'html.parser')
-                articles = soup.find_all('li', class_='js-stream-content')
-                
-                news_list = []
-                for article in articles:
-                    title_tag = article.find('h3')
-                    if title_tag:
-                        title = title_tag.text
-                        link = article.find('a')['href']
-                        if link.startswith('/'):
-                            link = f"https://finance.yahoo.com{link}"  # Convert relative to absolute link
-                        news_list.append({'title': title, 'link': link})
-                
-                return news_list
+                data = response.json()
+                news = data.get('news', [])
+                return news
             else:
-                print(f"Error fetching news: {response.status_code}")
                 return []
+    
+        def convert_timestamp(unix_timestamp):
+            return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
         
-        # Streamlit display
-        ticker = "AAPL"  # Example ticker, you can replace with any ticker symbol
-        st.header(f'Latest News for {ticker}')
-        
-        news_articles = get_stock_news(ticker)
-        
-        if news_articles:
-            # Loop through and display the news
-            for i, article in enumerate(news_articles[:10]):
-                st.subheader(f'News {i+1}')
-                st.write(f"**Title**: {article['title']}")
-                st.write(f"**Link**: [Read more]({article['link']})")
-                st.write("---")  # Divider between articles
-        else:
-            st.write(f'No recent news found for {ticker}.')
-
+        # Yahoo Finance News Tab
+        with news:
+            st.header(f'Latest News for {ticker}')
             
+            news_articles = get_stock_news(ticker)
+        
+            if news_articles:
+                # Loop through and display the news
+                for i, article in enumerate(news_articles[:10]):
+                    st.subheader(f'News {i+1}')
+                    st.write(f"**Title**: {article['title']}")
+                    st.write(f"**Publisher**: {article['publisher']}")
+        
+                    # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
+                    published_time = convert_timestamp(article['providerPublishTime'])
+                    st.write(f"**Published on**: {published_time}")
+                    
+                    st.write(f"**Link**: [Read more]({article['link']})")
+                    st.write("---")  # Divider between articles
+            else:
+                st.write(f'No recent news found for {ticker}.')
+    
+            
+
+
+       
