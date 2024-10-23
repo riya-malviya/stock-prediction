@@ -122,7 +122,7 @@ else:
       df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
         
         # Create and fit the model
-      model = Prophet    #(daily_seasonality=True)
+      model = Prophet()    #(daily_seasonality=True)
       model.fit(df_train)
         
     
