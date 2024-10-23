@@ -6,11 +6,9 @@ import plotly.express as px
 import plotly.graph_objs as go
 import matplotlib.pyplot as plt
 import requests
-import feedparser
 from datetime import date, timedelta, datetime
 from prophet import Prophet
 from prophet.plot import plot_plotly
-from bs4 import BeautifulSoup
 
 
 
