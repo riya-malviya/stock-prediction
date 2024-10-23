@@ -219,7 +219,7 @@ else:
         # Function to fetch news for a given ticker
         def fetch_news(ticker):
             # URL to query the news for the given ticker
-            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}/news/&newsCount=100"
+            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
             
             # Fetch the response
             response = requests.get(url)
