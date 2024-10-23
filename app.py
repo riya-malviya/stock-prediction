@@ -115,7 +115,7 @@ else:
       st.dataframe(data.tail(), width=900)
 
         # Flatten the multi-index columns
-      df.columns = ['_'.join(col).strip() for col in df.columns.values]
+      df.columns = ['_'.join(col).strip() for col in data.columns.values]
     
     # Check the new column names (you can print this if needed)
       print(df.columns)
