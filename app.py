@@ -129,23 +129,23 @@ else:
     return model
         
         # Create future dataframe
-      future = model.make_future_dataframe(periods=period)
+    future = model.make_future_dataframe(periods=period)
         
         # Predict future stock prices
-      forecast = model.predict(future)
+    forecast = model.predict(future)
         
         # Show and plot forecast
-      st.subheader(f'Forecast data for {ticker}')
-      st.write(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail())
+    st.subheader(f'Forecast data for {ticker}')
+    st.write(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail())
         
         # Plot forecast
-      fig_forecast = plot_plotly(model, forecast)
+    fig_forecast = plot_plotly(model, forecast)
       st.plotly_chart(fig_forecast)
         
         # Show forecast components (daily, weekly, yearly)
-      st.subheader('Forecast Components')
-      fig_components = model.plot_components(forecast)
-      st.write(fig_components)
+    st.subheader('Forecast Components')
+    fig_components = model.plot_components(forecast)
+    st.write(fig_components)
     
         # Prepare the data for Prophet
         # df_train = prepare_data_for_prophet(data)
