@@ -210,48 +210,21 @@ else:
     
             
 
+
+        def get_rss_news(ticker):
+            feed_url = f"https://finance.yahoo.com/rss/topic/{ticker}"
+            feed = feedparser.parse(feed_url)
         
-        def get_stock_news(ticker):
-            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
-            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-            response = requests.get(url, headers={'User-Agent': user_agent})
-            
-            if response.status_code == 200:
-                data = response.json()
-                print(data)  # Debugging line
-                news = data.get('news', [])
-                return news
-            else:
-                print(f"Error fetching news: {response.status_code} - {response.text}")
-                print(response.text)  # This will show the HTML response
-                return []
+            news_list = []
+            for entry in feed.entries:
+                news_list.append({'title': entry.title, 'link': entry.link})
         
-        def convert_timestamp(unix_timestamp):
-            return datetime.utcfromtimestamp(unix_timestamp).strftime('%d/%m/%Y, %H:%M:%S')
+            return news_list
         
-        # Yahoo Finance News Tab
-        with st.container():  # Ensure `news` is defined
-            ticker = "AAPL"  # Set a default ticker for testing
-            st.header(f'Latest News for {ticker}')
-            
-            news_articles = get_stock_news(ticker)
-            
-            if news_articles:
-                for i, article in enumerate(news_articles[:10]):
-                    st.subheader(f'News {i + 1}')
-                    st.write(f"**Title**: {article['title']}")
-                    st.write(f"**Publisher**: {article['publisher']}")
-                    
-                    # Convert and display the date and time
-                    published_time = convert_timestamp(article['providerPublishTime'])
-                    st.write(f"**Published on**: {published_time}")
-                    
-                    st.write(f"**Link**: [Read more]({article['link']})")
-                    st.write("---")  # Divider between articles
-            else:
-                st.write(f'No recent news found for {ticker}.')
+        # Example usage
+        ticker = {ticker}
+        news_articles = get_rss_news(ticker)
+        for article in news_articles:
+            print(f"Title: {article['title']}\nLink: {article['link']}\n")
+
         
-        
-        
-        
-                
