@@ -211,20 +211,55 @@ else:
             
 
 
-        def get_rss_news(ticker):
-            feed_url = f"https://finance.yahoo.com/rss/topic/{ticker}"
-            feed = feedparser.parse(feed_url)
+        import requests
+        from bs4 import BeautifulSoup
         
-            news_list = []
-            for entry in feed.entries:
-                news_list.append({'title': entry.title, 'link': entry.link})
-        
-            return news_list
+        def get_stock_news(ticker):
+            url = f"https://finance.yahoo.com/quote/{ticker}/news"
+            response = requests.get(url)
+            
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, 'html.parser')
+                articles = soup.find_all('li', class_='js-stream-content')
+                
+                news_list = []
+                for article in articles:
+                    title = article.find('h3').text
+                    link = article.find('a')['href']
+                    news_list.append({'title': title, 'link': link})
+                
+                return news_list
+            else:
+                print(f"Error fetching news: {response.status_code}")
+                return []
         
         # Example usage
         ticker = {ticker}
-        news_articles = get_rss_news(ticker)
+        news_articles = get_stock_news(ticker)
         for article in news_articles:
             print(f"Title: {article['title']}\nLink: {article['link']}\n")
+
+
+        with news:
+        st.header(f'Latest News for {ticker}')
+        
+        news_articles = get_stock_news(ticker)
+    
+        if news_articles:
+            # Loop through and display the news
+            for i, article in enumerate(news_articles[:10]):
+                st.subheader(f'News {i+1}')
+                st.write(f"**Title**: {article['title']}")
+                st.write(f"**Publisher**: {article['publisher']}")
+    
+                # Convert and display the date and time in the format: "dd/mm/yyyy, hour:minute:second"
+                published_time = convert_timestamp(article['providerPublishTime'])
+                st.write(f"**Published on**: {published_time}")
+                
+                st.write(f"**Link**: [Read more]({article['link']})")
+                st.write("---")  # Divider between articles
+        else:
+            st.write(f'No recent news found for {ticker}.')
+
 
         
