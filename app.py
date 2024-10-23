@@ -192,7 +192,7 @@ else:
     
         ##### Stock news page
         def get_stock_news(ticker):
-            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=10"
+            url = f"https://query2.finance.yahoo.com/v1/finance/search?q={ticker}&newsCount=20"
            
             
             user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
