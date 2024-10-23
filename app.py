@@ -2,11 +2,14 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from prophet import Prophet
 from prophet.plot import plot_plotly
 import plotly.express as px
 import plotly.graph_objs as go
+import matplotlib.pyplot as plt
+import requests
+
 
 st.title('Stock Dashboard')
 
