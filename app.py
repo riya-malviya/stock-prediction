@@ -74,7 +74,7 @@ def get_tickers_and_companies(query):
     return results
 
 
-tickers = get_tickers_and_companies(search_query)
+tickers = get_tickers_and_companies(query)
 st.sidebar.write("To get ticker symbol-")
 company_name = st.sidebar.text_input("Enter the company's name:")
 # Print the results
