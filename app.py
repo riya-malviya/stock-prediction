@@ -117,19 +117,39 @@ else:
         # Ensure the 'Date' column is in datetime format
       data['Date'] = pd.to_datetime(data['Date'])
 
-
-        # Prepare the data for Prophet
-      df_train = data[['Date', 'Close']].copy()
-      df_train = df_train.rename(columns={"Date": "ds", "Close": "Price"})
-
-        # Check for missing values or invalid data
-      df_train = df_train.dropna(subset=['Price'])
-      df_train['Price'] = pd.to_numeric(df_train['Price'], errors='coerce')
-      df_train = df_train.dropna(subset=['Price'])  # Remove rows with invalid 'y' values
+        # Ensure that 'Date' and 'Close' columns exist
+      print(data.columns)  # Check what columns are in your dataframe
+    
+    # Prepare the data for Prophet
+      if 'Date' in data.columns and 'Close' in data.columns:
+          df_train = data[['Date', 'Close']].copy()
+          df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
         
+        # Check for missing values or invalid data
+          df_train = df_train.dropna(subset=['y'])
+          df_train['y'] = pd.to_numeric(df_train['y'], errors='coerce')
+          df_train = df_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
+    
         # Create and fit the model
-      model = Prophet()    #(daily_seasonality=True)
-      model.fit(df_train)
+          model = Prophet()
+          model.fit(df_train)
+      else:
+          print("The required columns ('Date' and 'Close') are not in the dataframe.")
+
+
+
+      #   # Prepare the data for Prophet
+      # df_train = data[['Date', 'Close']].copy()
+      # df_train = df_train.rename(columns={"Date": "ds", "Close": "Price"})
+
+      #   # Check for missing values or invalid data
+      # df_train = df_train.dropna(subset=['Price'])
+      # df_train['Price'] = pd.to_numeric(df_train['Price'], errors='coerce')
+      # df_train = df_train.dropna(subset=['Price'])  # Remove rows with invalid 'y' values
+        
+      #   # Create and fit the model
+      # model = Prophet()    #(daily_seasonality=True)
+      # model.fit(df_train)
         
     
     # return model
