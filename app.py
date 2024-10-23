@@ -119,8 +119,8 @@ else:
 
 
         # Prepare the data for Prophet
-      df_train = data[['Date', 'Close']].copy()
-      df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
+      df_train = data[['Date', 'Adj Close']].copy()
+      df_train = df_train.rename(columns={"Date": "ds", "Adj Close": "y"})
 
         # Check for missing values or invalid data
       df_train = df_train.dropna(subset=['y'])
