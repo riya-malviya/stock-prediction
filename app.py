@@ -114,27 +114,45 @@ else:
       st.subheader(f'Raw data of {ticker}')
       st.dataframe(data.tail(), width=900)
 
-        # Ensure the 'Date' column is in datetime format
-      data['Date'] = pd.to_datetime(data['Date'])
+        # Flatten the multi-index columns
+      df.columns = ['_'.join(col).strip() for col in df.columns.values]
+    
+    # Check the new column names (you can print this if needed)
+      print(df.columns)
+    
+    # Rename columns (adjust based on the actual column names after flattening)
+      df_train = df.rename(columns={"Date_": "ds", "Close_AAPL": "y"})
+    
+    # Check for missing values or invalid data in 'y' column
+      df_train = df_train.dropna(subset=['y'])  # Remove rows with missing 'y' values
+      df_train['y'] = pd.to_numeric(df_train['y'], errors='coerce')  # Ensure 'y' is numeric
+      df_train = df_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
+    
+    # Create and fit the Prophet model
+      model = Prophet()
+      model.fit(df_train)
 
-        # Ensure that 'Date' and 'Close' columns exist
-      print(data.columns)  # Check what columns are in your dataframe
+    #     # Ensure the 'Date' column is in datetime format
+    #   data['Date'] = pd.to_datetime(data['Date'])
+
+    #     # Ensure that 'Date' and 'Close' columns exist
+    #   print(data.columns)  # Check what columns are in your dataframe
     
-    # Prepare the data for Prophet
-      if 'Date' in data.columns and 'Close' in data.columns:
-          df_train = data[['Date', 'Close']].copy()
-          df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
+    # # Prepare the data for Prophet
+    #   if 'Date' in data.columns and 'Close' in data.columns:
+    #       df_train = data[['Date', 'Close']].copy()
+    #       df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
         
-        # Check for missing values or invalid data
-          df_train = df_train.dropna(subset=['y'])
-          df_train['y'] = pd.to_numeric(df_train['y'], errors='coerce')
-          df_train = df_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
+    #     # Check for missing values or invalid data
+    #       df_train = df_train.dropna(subset=['y'])
+    #       df_train['y'] = pd.to_numeric(df_train['y'], errors='coerce')
+    #       df_train = df_train.dropna(subset=['y'])  # Remove rows with invalid 'y' values
     
-        # Create and fit the model
-          model = Prophet()
-          model.fit(df_train)
-      else:
-          print("The required columns ('Date' and 'Close') are not in the dataframe.")
+    #     # Create and fit the model
+    #       model = Prophet()
+    #       model.fit(df_train)
+    #   else:
+    #       print("The required columns ('Date' and 'Close') are not in the dataframe.")
 
 
 
