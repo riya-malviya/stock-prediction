@@ -5,7 +5,7 @@
 
 The Stock Vision is a web application built using Streamlit that allows users to visualize and analyze stock market data. It provides features such as historical pricing data, forecast predictions, stock comparisons, and the latest news related to the specified stock.
 
-Deployed website: [Stock Vision](https://stock-prediction-5a77cx7hdaxzaywhkqgzbz.streamlit.app/) 
+<!-- Deployed website: [Stock Vision](https://stock-prediction-5a77cx7hdaxzaywhkqgzbz.streamlit.app/) -->
 
 ## Features
 
